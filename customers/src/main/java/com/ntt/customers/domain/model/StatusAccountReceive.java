@@ -1,8 +1,7 @@
 package com.ntt.customers.domain.model;
 
-import lombok.*;
-
 import java.math.BigDecimal;
+import lombok.*;
 
 @Builder
 @Getter

@@ -2,9 +2,11 @@ package com.ntt.customers.infrastructure.in.messaging;
 
 import com.ntt.customers.application.port.in.CustomerSearchUseCase;
 import lombok.RequiredArgsConstructor;
-import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
-import reactor.core.publisher.Mono;
+import reactor.core.publisher.Flux;
+
+import java.util.function.Function;
 
 @Component
 @RequiredArgsConstructor
@@ -12,8 +14,9 @@ public class CustomerMessagingInputAdapter {
 
   private final CustomerSearchUseCase customerSearchUseCase;
 
-  @RabbitListener(queues = "account_customer_queue")
-  public Mono<Long> sendCustomerRef(String idNumber) {
-    return customerSearchUseCase.sendCustomerRef(idNumber);
+  @Bean
+  public Function<Flux<String>, Flux<Long>> customerRefProcessor() {
+    return flux ->
+            flux.flatMap(customerSearchUseCase::sendCustomerRef);
   }
 }

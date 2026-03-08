@@ -11,15 +11,12 @@ public class GlobalControllerAdvice {
 
   @ExceptionHandler(CustomerNotFoundException.class)
   public ResponseEntity<String> handleBadRequest(CustomerNotFoundException ex) {
-    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
-            ex.getMessage()
-    );
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
   }
 
   @ExceptionHandler(Exception.class)
   public ResponseEntity<String> handleGeneral(Exception ex) {
-    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
-            "Error interno del servidor"
-    );
+    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .body("Error interno del servidor");
   }
 }

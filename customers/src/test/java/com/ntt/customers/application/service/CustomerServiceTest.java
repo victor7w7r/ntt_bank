@@ -1,22 +1,21 @@
 package com.ntt.customers.application.service;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
 import com.ntt.customers.application.port.out.CustomerRepositoryPort;
 import com.ntt.customers.application.port.out.CustomerStatusAccountPort;
 import com.ntt.customers.domain.exception.CustomerNotFoundException;
 import com.ntt.customers.domain.model.Customer;
 import com.ntt.customers.domain.model.StatusAccountReceive;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class CustomerServiceTest {

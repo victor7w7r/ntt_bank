@@ -1,9 +1,14 @@
 package com.ntt.customers.infrastructure.out.messaging;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
 import com.ntt.customers.domain.model.Customer;
 import com.ntt.customers.domain.model.StatusAccountReceive;
 import com.ntt.customers.infrastructure.out.messaging.entity.StatusAccountSendReq;
 import com.ntt.customers.infrastructure.out.messaging.mapper.CustomerMessagingOutputMapper;
+import java.time.LocalDate;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -11,12 +16,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
-
-import java.time.LocalDate;
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class CustomerMessagingOutputAdapterTest {

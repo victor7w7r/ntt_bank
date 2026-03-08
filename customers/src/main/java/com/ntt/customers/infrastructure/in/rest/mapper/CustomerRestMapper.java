@@ -10,19 +10,14 @@ import org.mapstruct.ReportingPolicy;
 
 import java.util.List;
 
-@Mapper(
-        componentModel = "spring",
-        unmappedTargetPolicy = ReportingPolicy.IGNORE
-)
+@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface CustomerRestMapper {
   Customer toCustomer(CustomerRequest customerRequest);
+
   CustomerResponse toCustomerResponse(Customer customer);
 
-  StatusAccountReceiveRes toStatusAccountReceiveRes(
-          StatusAccountReceive statusAccountReceive
-  );
+  StatusAccountReceiveRes toStatusAccountReceiveRes(StatusAccountReceive statusAccountReceive);
 
   List<StatusAccountReceiveRes> toStatusAccountReceiveResList(
-          List<StatusAccountReceive> statusAccountReceiveList
-  );
+      List<StatusAccountReceive> statusAccountReceiveList);
 }

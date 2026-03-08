@@ -10,13 +10,11 @@ import com.ntt.customers.domain.exception.CustomerExistsException;
 import com.ntt.customers.domain.exception.CustomerNotFoundException;
 import com.ntt.customers.domain.model.Customer;
 import com.ntt.customers.domain.model.StatusAccountReceive;
+import java.time.LocalDate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-
-import java.time.LocalDate;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -47,7 +45,7 @@ public class CustomerService implements CustomerSearchUseCase, CustomerCreateUse
    return customerRepositortyPort
             .findByIdNumber(idNumber)
             .switchIfEmpty(Mono.error(new CustomerNotFoundException("ERROR: Cliente no encontrado")))
-            .flatMapMany(customerFound -> customerStatusAccountPort.requestStatusAccount(
+            .flatMapMany(customerFound -> customerStatusAccountPort.emitRequestStatusAccount(
                     startDate,
                     endDate,
                     idNumber,

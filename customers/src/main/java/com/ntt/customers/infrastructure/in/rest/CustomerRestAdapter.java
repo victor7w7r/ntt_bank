@@ -10,15 +10,13 @@ import com.ntt.customers.infrastructure.in.rest.model.CustomerRequest;
 import com.ntt.customers.infrastructure.in.rest.model.CustomerResponse;
 import com.ntt.customers.infrastructure.in.rest.model.StatusAccountReceiveRes;
 import jakarta.validation.Valid;
+import java.time.LocalDate;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-
-import java.time.LocalDate;
-import java.util.List;
 
 @RestController
 @CrossOrigin("*")

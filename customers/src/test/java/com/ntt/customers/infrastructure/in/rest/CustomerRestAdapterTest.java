@@ -1,5 +1,10 @@
 package com.ntt.customers.infrastructure.in.rest;
 
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import com.ntt.customers.application.port.in.CustomerCreateUseCase;
 import com.ntt.customers.application.port.in.CustomerDeleteUseCase;
 import com.ntt.customers.application.port.in.CustomerSearchUseCase;
@@ -8,6 +13,7 @@ import com.ntt.customers.domain.exception.CustomerNotFoundException;
 import com.ntt.customers.domain.model.Customer;
 import com.ntt.customers.infrastructure.in.rest.mapper.CustomerRestMapper;
 import com.ntt.customers.infrastructure.in.rest.model.CustomerResponse;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -16,13 +22,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-
-import java.util.List;
-
-import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(CustomerRestAdapter.class)
 @ExtendWith(MockitoExtension.class)

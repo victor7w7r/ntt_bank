@@ -1,8 +1,7 @@
 package com.ntt.customers.infrastructure.out.messaging.entity;
 
-import lombok.*;
-
 import java.time.LocalDate;
+import lombok.*;
 
 @Builder
 @Getter
