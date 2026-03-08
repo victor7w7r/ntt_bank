@@ -28,6 +28,21 @@ public class AccountRepositoryPersistenceAdapter implements AccountRepositoryPor
         .map(accountPersistenceMapper::toAccount);
   }
 
+
+  public Flux<Account> findAllWithMovements(Flux<Account> account) {
+    account.flatMap(accountEntity -> {
+      return movementRepository.findByAccountMovement(accountEntity.getId())
+              .collectList() // 3. Juntamos todos los movimientos en una List
+              .map(movements -> {
+                // 4. Mapeamos la entidad a nuestro modelo de dominio
+                Account domainAccount = mapper.toAccount(accountEntity);
+                // 5. Le "enchufamos" la lista de movimientos
+                domainAccount.setMovements(movements);
+                return domainAccount;
+              });
+    });
+  }
+
   @Override
   public Mono<Account> findByAccountNum(Long accountNum) {
     return accountRepository.findByNumAccount(accountNum).map(accountPersistenceMapper::toAccount);

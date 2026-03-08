@@ -12,13 +12,19 @@ import com.ntt.customers.domain.model.Customer;
 import com.ntt.customers.domain.model.StatusAccountReceive;
 import java.time.LocalDate;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
-public class CustomerService implements CustomerSearchUseCase, CustomerCreateUseCase, CustomerUpdateUseCase, CustomerDeleteUseCase {
+public class CustomerService
+    implements CustomerSearchUseCase,
+        CustomerCreateUseCase,
+        CustomerUpdateUseCase,
+        CustomerDeleteUseCase {
 
   private final CustomerRepositoryPort customerRepositortyPort;
   private final CustomerStatusAccountPort customerStatusAccountPort;
@@ -31,51 +37,49 @@ public class CustomerService implements CustomerSearchUseCase, CustomerCreateUse
   @Override
   public Mono<Long> sendCustomerRef(String idNumber) {
     return customerRepositortyPort
-            .findByIdNumber(idNumber)
-            .map(Customer::getId)
-            .switchIfEmpty(Mono.error(new CustomerNotFoundException("ERROR: Cliente no encontrado")));
+        .findByIdNumber(idNumber)
+        .map(Customer::getId)
+        .switchIfEmpty(Mono.error(new CustomerNotFoundException("ERROR: Cliente no encontrado")));
   }
 
   @Override
   public Flux<StatusAccountReceive> requestStatusAccount(
-          LocalDate startDate,
-          LocalDate endDate,
-          String idNumber
-  ) {
-   return customerRepositortyPort
-            .findByIdNumber(idNumber)
-            .switchIfEmpty(Mono.error(new CustomerNotFoundException("ERROR: Cliente no encontrado")))
-            .flatMapMany(customerFound -> customerStatusAccountPort.emitRequestStatusAccount(
-                    startDate,
-                    endDate,
-                    idNumber,
-                    customerFound
-            ));
+      LocalDate startDate, LocalDate endDate, String idNumber) {
+    return customerRepositortyPort
+        .findByIdNumber(idNumber)
+        .switchIfEmpty(Mono.error(new CustomerNotFoundException("ERROR: Cliente no encontrado")))
+        .flatMapMany(
+            customerFound ->
+                customerStatusAccountPort.emitRequestStatusAccount(
+                    startDate, endDate, idNumber, customerFound));
   }
 
   @Override
   public Mono<Void> save(Customer customer) {
     return customerRepositortyPort
-          .findByIdNumber(customer.getIdNumber())
-            .filter( it -> it.getId() != null )
-            .switchIfEmpty(Mono.error(new CustomerExistsException("ERROR: Cliente ya existe")))
-            .doOnNext(it -> it.setStatus(true))
-            .flatMap(customerRepositortyPort::save);
+        .findByIdNumber(customer.getIdNumber())
+        .flatMap(
+            existingCustomer ->
+                Mono.<Customer>error(new CustomerExistsException("ERROR: Cliente ya existe")))
+        .switchIfEmpty(
+            Mono.defer(
+                () -> customerRepositortyPort.save(customer.toBuilder().status(true).build())))
+        .then();
   }
 
   @Override
   public Mono<Void> update(Customer customer) {
-   return customerRepositortyPort
-            .findByIdNumber(customer.getIdNumber())
-            .switchIfEmpty(Mono.error(new CustomerNotFoundException("ERROR: Cliente no encontrado")))
-            .flatMap(customerRepositortyPort::update);
+    return customerRepositortyPort
+        .findByIdNumber(customer.getIdNumber())
+        .switchIfEmpty(Mono.error(new CustomerNotFoundException("ERROR: Cliente no encontrado")))
+        .flatMap(customerRepositortyPort::update);
   }
 
   @Override
   public Mono<Void> delete(String idNumber) {
     return customerRepositortyPort
-            .findByIdNumber(idNumber)
-            .switchIfEmpty(Mono.error(new CustomerNotFoundException("ERROR: Cliente no encontrado")))
-            .flatMap(it -> customerRepositortyPort.delete(idNumber));
+        .findByIdNumber(idNumber)
+        .switchIfEmpty(Mono.error(new CustomerNotFoundException("ERROR: Cliente no encontrado")))
+        .flatMap(it -> customerRepositortyPort.delete(idNumber));
   }
 }

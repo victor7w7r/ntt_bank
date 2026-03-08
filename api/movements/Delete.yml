@@ -1,0 +1,27 @@
+info:
+  name: Delete
+  type: http
+  seq: 4
+
+http:
+  method: DELETE
+  url: http://localhost:8081/api/v1/movements/UUID
+  headers:
+    - name: Content-Type
+      value: application/json
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: after-response
+      code: "test(\"Status code is 0\", function () {\r
+
+        \    expect(res.getStatus()).to.equal(0);\r
+
+        });"
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

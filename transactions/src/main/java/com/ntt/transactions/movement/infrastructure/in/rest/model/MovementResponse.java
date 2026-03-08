@@ -10,7 +10,6 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MovementResponse {
-
   private LocalDate date;
   private String typeMovement;
   private BigDecimal value;

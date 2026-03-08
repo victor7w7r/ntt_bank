@@ -22,8 +22,13 @@ public class AccountEntity {
   @Column("num_account")
   private Long numAccount;
 
+  @Column("account_type")
   private String accountType;
+
+  @Column("initial_funds")
   private BigDecimal initialFunds;
   private Boolean status;
+
+  @Column("customer_ref")
   private Long customerRef;
 }

@@ -1,0 +1,59 @@
+info:
+  name: Create
+  type: http
+  seq: 2
+
+http:
+  method: POST
+  url: http://localhost:8081/api/v1/accounts/xxx
+  headers:
+    - name: Content-Type
+      value: application/json
+  body:
+    type: json
+    data: |-
+      {
+        "numAccount": 478758,
+        "accountType": "Ahorro",
+        "initialFunds": 2000,
+        "customerRef": 1
+      }
+
+      /*
+      {
+        "numAccount": 225487,
+        "accountType": "Corriente",
+        "initialFunds": 100,
+        "customerRef": 2
+      }
+
+      {
+        "numAccount": 495878,
+        "accountType": "Ahorros",
+        "initialFunds": 0,
+        "customerRef": 3
+      }
+
+      {
+        "numAccount": 496825,
+        "accountType": "Ahorros",
+        "initialFunds": 540,
+        "customerRef": 2
+      }
+      */
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: after-response
+      code: "test(\"Status code is 200\", function () {\r
+
+        \    expect(res.getStatus()).to.equal(200);\r
+
+        });"
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

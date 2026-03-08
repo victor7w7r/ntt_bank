@@ -17,7 +17,6 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MovementEntity {
-
   @Id
   private Long id;
 
@@ -30,6 +29,6 @@ public class MovementEntity {
   private BigDecimal balance;
   private String uuid;
 
-  @Column("account_id")
-  private Long accountId;
+  @Column("account_movement")
+  private Long accountMovement;
 }

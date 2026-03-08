@@ -6,11 +6,13 @@ import com.ntt.customers.domain.model.Customer;
 import com.ntt.customers.infrastructure.out.persistence.mapper.CustomerPersistenceMapper;
 import com.ntt.customers.infrastructure.out.persistence.repository.CustomerRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Component
+@Slf4j
 @RequiredArgsConstructor
 public class CustomerRepositoryPersistenceAdapter implements CustomerRepositoryPort {
 
@@ -28,23 +30,24 @@ public class CustomerRepositoryPersistenceAdapter implements CustomerRepositoryP
   }
 
   @Override
-  public Mono<Void> save(Customer customer) {
+  public Mono<Customer> save(Customer customer) {
     return Mono.just(customer)
         .map(customerPersistenceMapper::toCustomerEntity)
         .flatMap(customerRepository::save)
-        .then();
+        .map(cust -> customer);
   }
 
   @Override
   public Mono<Void> update(Customer customer) {
     return customerRepository
         .findByIdNumber(customer.getIdNumber())
-        .flatMap(
+            .switchIfEmpty(Mono.error(new CustomerNotFoundException("ERROR: Cliente no encontrado")))
+            .flatMap(
             customerEntity -> {
               customerPersistenceMapper.update(customer, customerEntity);
+              log.info("Updated Entity {}", customerEntity);
               return customerRepository.save(customerEntity);
             })
-        .switchIfEmpty(Mono.error(new CustomerNotFoundException("ERROR: Cliente no encontrado")))
         .then();
   }
 
@@ -52,9 +55,8 @@ public class CustomerRepositoryPersistenceAdapter implements CustomerRepositoryP
   public Mono<Void> delete(String idNumber) {
     return customerRepository
         .findByIdNumber(idNumber)
-        .flatMap(
-            customerEntity -> customerRepository.deleteByIdNumber(customerEntity.getIdNumber()))
         .switchIfEmpty(Mono.error(new CustomerNotFoundException("ERROR: Cliente no encontrado")))
+        .flatMap(customerRepository::delete)
         .then();
   }
 }

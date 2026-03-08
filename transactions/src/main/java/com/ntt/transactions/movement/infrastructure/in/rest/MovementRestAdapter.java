@@ -68,7 +68,7 @@ public class MovementRestAdapter {
                     ResponseEntity.status(201).body(
                             MovementOperationResponse.builder()
                                     .status("status")
-                                    .message("Cliente actualizado exitosamente")
+                                    .message("Movimiento actualizado exitosamente")
                                     .build()
                     )
             ));

@@ -1,0 +1,62 @@
+info:
+  name: Create
+  type: http
+  seq: 2
+
+http:
+  method: POST
+  url: http://localhost:8081/api/v1/movements/478758
+  headers:
+    - name: Content-Type
+      value: application/json
+  body:
+    type: json
+    data: |-
+      {  
+        "date": "2026-03-08",
+        "typeMovement": "Ahorro",
+        "balance": "2000",
+        "value": "-575.00"
+      }
+
+      /*
+      225487
+      { 
+        "date": "2026-03-08",
+        "typeMovement": "Corriente",
+        "balance": "100",
+        "value": "600"
+      }
+
+      495878
+      { 
+        "date": "2026-03-08",
+        "typeMovement": "Ahorros",
+        "balance": "0",
+        "value": "150"
+      }
+
+      496825
+      { 
+        "date": "2026-03-08",
+        "typeMovement": "Ahorros",
+        "balance": "540",
+        "value": "-540"
+      }
+      */
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: after-response
+      code: "test(\"Status code is 200\", function () {\r
+
+        \    expect(res.getStatus()).to.equal(200);\r
+
+        });"
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

@@ -5,18 +5,17 @@ import java.math.BigDecimal;
 import java.util.List;
 import lombok.*;
 
-@Builder
+@Builder(toBuilder = true)
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class Account {
-
   private Long id;
   private Long numAccount;
   private String accountType;
   private BigDecimal initialFunds;
-  private Long accountRef;
+  private Long customerRef;
   private Boolean status;
-  private List<Movement> movementEntities;
+  private List<Movement> movements;
 }

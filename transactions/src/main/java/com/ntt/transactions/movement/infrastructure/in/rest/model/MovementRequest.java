@@ -13,11 +13,8 @@ import lombok.*;
 public class MovementRequest {
 
   @NotNull private LocalDate date;
-
   private String typeMovement;
-
   @NotNull private BigDecimal value;
-
   private BigDecimal balance;
   private String uuid;
 }

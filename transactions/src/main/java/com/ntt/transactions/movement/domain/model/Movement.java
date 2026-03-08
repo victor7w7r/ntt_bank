@@ -18,5 +18,5 @@ public class Movement {
   private BigDecimal value;
   private BigDecimal balance;
   private String uuid;
-  private String accountId;
+  private String accountMovement;
 }

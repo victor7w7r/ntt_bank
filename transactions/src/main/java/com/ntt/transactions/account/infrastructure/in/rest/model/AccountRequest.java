@@ -12,18 +12,9 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AccountRequest {
-
-  @NotNull
-  private Long numAccount;
-
-  @NotNull
-  private String accountType;
-
-  @NotNull
-  private BigDecimal initialFunds;
-
-  private Long accountRef;
+  @NotNull private Long numAccount;
+  @NotNull private String accountType;
+  @NotNull private BigDecimal initialFunds;
+  private Long customerRef;
   private Boolean status;
-
-  private List<Movement> movements;
 }

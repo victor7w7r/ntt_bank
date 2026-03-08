@@ -7,7 +7,7 @@ import reactor.core.publisher.Mono;
 public interface CustomerRepositoryPort {
   Flux<Customer> findAll();
   Mono<Customer> findByIdNumber(String idNumber);
-  Mono<Void> save(Customer customer);
+  Mono<Customer> save(Customer customer);
   Mono<Void> update(Customer customer);
   Mono<Void> delete(String idNumber);
 }

@@ -13,10 +13,9 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AccountResponse {
-
   private Long numAccount;
   private String accountType;
   private BigDecimal initialFunds;
   private Boolean status;
-  private List<Movement> movementEntities;
+  private List<Movement> movements;
 }

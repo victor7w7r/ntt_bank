@@ -35,9 +35,9 @@ dependencies {
 
     implementation("org.mapstruct:mapstruct:1.6.3")
     annotationProcessor("org.projectlombok:lombok")
+    compileOnly("org.projectlombok:lombok")
     annotationProcessor("org.projectlombok:lombok-mapstruct-binding:0.2.0")
     annotationProcessor("org.mapstruct:mapstruct-processor:1.6.3")
-    compileOnly("org.projectlombok:lombok")
     runtimeOnly("io.r2dbc:r2dbc-h2")
     runtimeOnly("org.postgresql:postgresql")
     runtimeOnly("org.postgresql:r2dbc-postgresql")

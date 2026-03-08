@@ -1,0 +1,37 @@
+info:
+  name: Update
+  type: http
+  seq: 3
+
+http:
+  method: PUT
+  url: http://localhost:8081/api/v1/movements
+  headers:
+    - name: Content-Type
+      value: application/json
+  body:
+    type: json
+    data: |-
+      {  
+        "date": "2026-03-08",
+        "uuid": "ssss-ssss",
+        "typeMovement": "Ahorro",
+        "balance": "2000",
+        "value": "-575.00"
+      }
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: after-response
+      code: "test(\"Status code is 200\", function () {\r
+
+        \    expect(res.getStatus()).to.equal(200);\r
+
+        });"
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

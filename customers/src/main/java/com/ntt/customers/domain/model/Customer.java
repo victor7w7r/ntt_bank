@@ -2,7 +2,7 @@ package com.ntt.customers.domain.model;
 
 import lombok.*;
 
-@Builder
+@Builder(toBuilder = true)
 @Getter
 @Setter
 @NoArgsConstructor

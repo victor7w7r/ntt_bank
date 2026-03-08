@@ -1,0 +1,24 @@
+info:
+  name: Delete
+  type: http
+  seq: 4
+
+http:
+  method: DELETE
+  url: http://localhost:8081/api/v1/accounts/xxx
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: after-response
+      code: "test(\"Status code is 200\", function () {\r
+
+        \    expect(res.getStatus()).to.equal(200);\r
+
+        });"
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

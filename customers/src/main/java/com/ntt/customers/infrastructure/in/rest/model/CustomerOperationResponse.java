@@ -9,6 +9,5 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CustomerOperationResponse {
-  private String status;
   private String message;
 }

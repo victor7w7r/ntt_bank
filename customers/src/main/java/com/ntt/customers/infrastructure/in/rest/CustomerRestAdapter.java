@@ -21,7 +21,7 @@ import reactor.core.publisher.Mono;
 @RestController
 @CrossOrigin("*")
 @Slf4j
-@RequestMapping("/api/v1/customers")
+@RequestMapping("api/v1/customers")
 @RequiredArgsConstructor
 public class CustomerRestAdapter {
 
@@ -62,7 +62,6 @@ public class CustomerRestAdapter {
             .then(Mono.fromCallable(() ->
                     ResponseEntity.status(201).body(
                             CustomerOperationResponse.builder()
-                                    .status("status")
                                     .message("Cliente guardado exitosamente")
                                     .build()
                     )
@@ -80,21 +79,19 @@ public class CustomerRestAdapter {
             .then(Mono.fromCallable(() ->
                     ResponseEntity.status(201).body(
                             CustomerOperationResponse.builder()
-                                    .status("status")
                                     .message("Cliente actualizado exitosamente")
                                     .build()
                     )
             ));
   }
 
-  @DeleteMapping("{id}")
-  public Mono<ResponseEntity<?>> deleteCustomer(@PathVariable String id) {
-    return customerDeleteUseCase.delete(id)
-            .doFirst(() -> log.info("Deleting customer {}", id))
+  @DeleteMapping("{idNumber}")
+  public Mono<ResponseEntity<?>> deleteCustomer(@PathVariable String idNumber) {
+    return customerDeleteUseCase.delete(idNumber)
+            .doFirst(() -> log.info("Deleting customer {}", idNumber))
             .then(Mono.fromCallable(() ->
                     ResponseEntity.status(202).body(
                             CustomerOperationResponse.builder()
-                                    .status("status")
                                     .message("Cliente eliminado exitosamente")
                                     .build()
                     )
