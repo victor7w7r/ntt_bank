@@ -16,9 +16,9 @@ public class CustomerMessagingInputAdapter {
 
   @RabbitListener(queues = BrokerConfig.ACCOUNT_STATUS_QUEUE)
   public Long sendCustomerRef(Long idNumber) {
-    log.info("idNumber recibido: {}", idNumber);
+    log.info("Received idNumber: {}", idNumber);
     final var number = customerSearchUseCase.sendCustomerRef(idNumber).block();
-    log.info("number resultante {}", number);
+    log.info("Result number{}", number);
     return number;
   }
 }

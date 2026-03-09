@@ -23,8 +23,7 @@ public class BrokerConfig {
   public static final String CUSTOMER_ERASE_ROUTING_KEY = "customer.deleted";
 
   public static final String ACCOUNT_STATUS_QUEUE = "account_status_queue";
-  public static final String ACCOUNT_STATUS_ROUTING_KEY =
-          "account.status.requested";
+  public static final String ACCOUNT_STATUS_ROUTING_KEY = "account.status.requested";
 
   @Bean
   public DirectExchange exchange() {
@@ -54,22 +53,20 @@ public class BrokerConfig {
   @Bean
   public Binding bindingAccountClient() {
     return BindingBuilder.bind(customerAccountQueue())
-            .to(exchange())
-            .with(ACCOUNT_CUSTOMER_ROUTING_KEY);
+        .to(exchange())
+        .with(ACCOUNT_CUSTOMER_ROUTING_KEY);
   }
 
   @Bean
   public Binding bindingEraseClient() {
-    return BindingBuilder.bind(borrarClientQueue())
-            .to(exchange())
-            .with(CUSTOMER_ERASE_ROUTING_KEY);
+    return BindingBuilder.bind(borrarClientQueue()).to(exchange()).with(CUSTOMER_ERASE_ROUTING_KEY);
   }
 
   @Bean
   public Binding bindingAccountStatus() {
     return BindingBuilder.bind(accountStatusQueue())
-            .to(exchange())
-            .with(ACCOUNT_STATUS_ROUTING_KEY);
+        .to(exchange())
+        .with(ACCOUNT_STATUS_ROUTING_KEY);
   }
 
   @Bean

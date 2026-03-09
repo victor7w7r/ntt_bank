@@ -17,27 +17,24 @@ public class AccountMessagingOutputAdapter implements AccountMessagingPort {
 
   @Override
   public Mono<Long> sendIdReceiveRef(Long idNumber) {
-    return Mono.fromCallable(() -> {
-      Object response = rabbitTemplate.convertSendAndReceive(
-              "bank-ntt",
-              "account.status.requested",
-              idNumber
-      );
+    return Mono.fromCallable(
+            () -> {
+              Object response =
+                  rabbitTemplate.convertSendAndReceive(
+                      "bank-ntt", "account.status.requested", idNumber);
 
-      if (response == null) {
-        throw new RuntimeException("Customers service timeout");
-      }
+              if (response == null) {
+                throw new RuntimeException("Customers service timeout");
+              }
 
-      log.info("The number is {}", response);
+              log.info("The number is {}", response);
 
-      if (response instanceof Number) {
-        return ((Number) response).longValue();
-      }
-      return Long.parseLong(response.toString());
-    })
-    .flatMap(
-            res -> res == 0L ? Mono.empty() : Mono.just(res)
-    )
-    .subscribeOn(Schedulers.boundedElastic());
+              if (response instanceof Number) {
+                return ((Number) response).longValue();
+              }
+              return Long.parseLong(response.toString());
+            })
+        .flatMap(res -> res == 0L ? Mono.empty() : Mono.just(res))
+        .subscribeOn(Schedulers.boundedElastic());
   }
 }

@@ -9,13 +9,11 @@ import org.mapstruct.MappingTarget;
 @Mapper(componentModel = "spring")
 public interface AccountPersistenceMapper {
   AccountEntity toAccountEntity(Account account);
+
   Account toAccount(AccountEntity value);
 
   void update(Account source, @MappingTarget AccountEntity target);
 
   @Mapping(target = "numAccount", ignore = true)
-  void updateWithoutNumAccount(
-          Account source,
-          @MappingTarget AccountEntity target
-  );
+  void updateWithoutNumAccount(Account source, @MappingTarget AccountEntity target);
 }

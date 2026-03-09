@@ -14,8 +14,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 @WebAppConfiguration
 class TransactionsApplicationTests {
 
-  @Autowired
-  private ApplicationContext context;
+  @Autowired private ApplicationContext context;
 
   @Test
   void contextLoadsTest_contextLoadsSuccessfully() {

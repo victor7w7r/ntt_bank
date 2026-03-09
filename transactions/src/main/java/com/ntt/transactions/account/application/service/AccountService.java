@@ -12,7 +12,6 @@ import com.ntt.transactions.account.domain.model.StatusAccountSend;
 import com.ntt.transactions.common.exception.AccountExistsException;
 import com.ntt.transactions.common.exception.EntityNotFoundException;
 import com.ntt.transactions.movement.application.port.out.MovementRepositoryPort;
-
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import lombok.RequiredArgsConstructor;

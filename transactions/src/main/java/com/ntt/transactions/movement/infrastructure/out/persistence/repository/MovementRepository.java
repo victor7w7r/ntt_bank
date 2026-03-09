@@ -9,6 +9,8 @@ import reactor.core.publisher.Mono;
 public interface MovementRepository extends ReactiveCrudRepository<MovementEntity, Long> {
   @Query("SELECT * FROM movement WHERE account_movement = :accountId")
   Flux<MovementEntity> findByAccountMovement(Long accountId);
+
   Mono<MovementEntity> findByUuid(String uuid);
+
   Mono<Void> deleteByUuid(String uuid);
 }

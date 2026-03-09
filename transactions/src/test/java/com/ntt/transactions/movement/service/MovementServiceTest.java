@@ -1,12 +1,18 @@
 package com.ntt.transactions.movement.service;
 
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
+
 import com.ntt.transactions.account.application.port.out.AccountRepositoryPort;
+import com.ntt.transactions.account.domain.model.Account;
 import com.ntt.transactions.common.exception.EntityNotFoundException;
 import com.ntt.transactions.common.exception.InsufficientFundsException;
 import com.ntt.transactions.movement.application.port.out.MovementRepositoryPort;
 import com.ntt.transactions.movement.application.service.MovementService;
 import com.ntt.transactions.movement.domain.model.Movement;
-import com.ntt.transactions.account.domain.model.Account;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -19,24 +25,14 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.UUID;
-
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
-
 @ExtendWith(MockitoExtension.class)
 @DisplayName("MovementService Tests")
 class MovementServiceTest {
-  @Mock
-  private MovementRepositoryPort movementRepositoryPort;
+  @Mock private MovementRepositoryPort movementRepositoryPort;
 
-  @Mock
-  private AccountRepositoryPort accountRepositoryPort;
+  @Mock private AccountRepositoryPort accountRepositoryPort;
 
-  @InjectMocks
-  private MovementService movementService;
+  @InjectMocks private MovementService movementService;
 
   @BeforeEach
   void setUp() {
@@ -50,7 +46,8 @@ class MovementServiceTest {
     @Test
     @DisplayName("should return all movements when they exist")
     void shouldFindAllMovements() {
-      final var movement1 = Movement.builder()
+      final var movement1 =
+          Movement.builder()
               .uuid(UUID.randomUUID().toString())
               .value(new BigDecimal("100.00"))
               .typeMovement("Deposito")
@@ -59,7 +56,8 @@ class MovementServiceTest {
               .accountMovement("account1")
               .build();
 
-      final var movement2 = Movement.builder()
+      final var movement2 =
+          Movement.builder()
               .uuid(UUID.randomUUID().toString())
               .value(new BigDecimal("-50.00"))
               .typeMovement("Retiro")
@@ -68,13 +66,12 @@ class MovementServiceTest {
               .accountMovement("account1")
               .build();
 
-      when(movementRepositoryPort.findAll())
-              .thenReturn(Flux.just(movement1, movement2));
+      when(movementRepositoryPort.findAll()).thenReturn(Flux.just(movement1, movement2));
 
       StepVerifier.create(movementService.findAll())
-              .expectNext(movement1)
-              .expectNext(movement2)
-              .verifyComplete();
+          .expectNext(movement1)
+          .expectNext(movement2)
+          .verifyComplete();
 
       verify(movementRepositoryPort, times(1)).findAll();
     }
@@ -82,12 +79,9 @@ class MovementServiceTest {
     @Test
     @DisplayName("should return empty flux when no movements exist")
     void shouldReturnEmptyFluxWhenNoMovements() {
-      when(movementRepositoryPort.findAll())
-              .thenReturn(Flux.empty());
+      when(movementRepositoryPort.findAll()).thenReturn(Flux.empty());
 
-      StepVerifier.create(movementService.findAll())
-              .expectComplete()
-              .verify();
+      StepVerifier.create(movementService.findAll()).expectComplete().verify();
 
       verify(movementRepositoryPort, times(1)).findAll();
     }
@@ -105,29 +99,22 @@ class MovementServiceTest {
       final var initialFunds = new BigDecimal("1000.00");
       final var movementValue = new BigDecimal("500.00");
 
-      final var account = Account.builder()
-              .id(1L)
-              .numAccount(numAccountFake)
-              .initialFunds(initialFunds)
-              .build();
+      final var account =
+          Account.builder().id(1L).numAccount(numAccountFake).initialFunds(initialFunds).build();
 
-      final var movement = Movement.builder()
+      final var movement =
+          Movement.builder()
               .uuid(movementUuidFake)
               .value(movementValue)
               .date(LocalDate.now())
               .build();
 
-      when(movementRepositoryPort.findByUuid(movementUuidFake))
-              .thenReturn(Mono.empty());
-      when(accountRepositoryPort.findByAccountNum(numAccountFake))
-              .thenReturn(Mono.just(account));
-      when(accountRepositoryPort.saveOnly(any(Account.class)))
-              .thenReturn(Mono.empty());
-      when(movementRepositoryPort.save(any(Movement.class)))
-              .thenReturn(Mono.empty());
+      when(movementRepositoryPort.findByUuid(movementUuidFake)).thenReturn(Mono.empty());
+      when(accountRepositoryPort.findByAccountNum(numAccountFake)).thenReturn(Mono.just(account));
+      when(accountRepositoryPort.saveOnly(any(Account.class))).thenReturn(Mono.empty());
+      when(movementRepositoryPort.save(any(Movement.class))).thenReturn(Mono.empty());
 
-      StepVerifier.create(movementService.save(movement, numAccountFake))
-              .verifyComplete();
+      StepVerifier.create(movementService.save(movement, numAccountFake)).verifyComplete();
 
       verify(movementRepositoryPort).findByUuid(movementUuidFake);
       verify(accountRepositoryPort).findByAccountNum(numAccountFake);
@@ -141,29 +128,22 @@ class MovementServiceTest {
       final var initialFunds = new BigDecimal("1000.00");
       final var movementValue = new BigDecimal("-200.00");
 
-      final var account = Account.builder()
-              .id(1L)
-              .numAccount(numAccountFake)
-              .initialFunds(initialFunds)
-              .build();
+      final var account =
+          Account.builder().id(1L).numAccount(numAccountFake).initialFunds(initialFunds).build();
 
-      final var movement = Movement.builder()
+      final var movement =
+          Movement.builder()
               .uuid(movementUuidFake)
               .value(movementValue)
               .date(LocalDate.now())
               .build();
 
-      when(movementRepositoryPort.findByUuid(movementUuidFake))
-              .thenReturn(Mono.empty());
-      when(accountRepositoryPort.findByAccountNum(numAccountFake))
-              .thenReturn(Mono.just(account));
-      when(accountRepositoryPort.saveOnly(any(Account.class)))
-              .thenReturn(Mono.empty());
-      when(movementRepositoryPort.save(any(Movement.class)))
-              .thenReturn(Mono.empty());
+      when(movementRepositoryPort.findByUuid(movementUuidFake)).thenReturn(Mono.empty());
+      when(accountRepositoryPort.findByAccountNum(numAccountFake)).thenReturn(Mono.just(account));
+      when(accountRepositoryPort.saveOnly(any(Account.class))).thenReturn(Mono.empty());
+      when(movementRepositoryPort.save(any(Movement.class))).thenReturn(Mono.empty());
 
-      StepVerifier.create(movementService.save(movement, numAccountFake))
-              .verifyComplete();
+      StepVerifier.create(movementService.save(movement, numAccountFake)).verifyComplete();
 
       verify(movementRepositoryPort).findByUuid(movementUuidFake);
       verify(accountRepositoryPort).findByAccountNum(numAccountFake);
@@ -173,23 +153,20 @@ class MovementServiceTest {
     @DisplayName("should fail when movement already exists")
     void shouldFailWhenMovementExists() {
       String existingUuid = movementUuidFake;
-      final var existingMovement = Movement.builder()
-              .uuid(existingUuid)
-              .value(new BigDecimal("100.00"))
-              .build();
+      final var existingMovement =
+          Movement.builder().uuid(existingUuid).value(new BigDecimal("100.00")).build();
 
-      final var newMovement = Movement.builder()
-              .uuid(existingUuid)
-              .value(new BigDecimal("200.00"))
-              .build();
+      final var newMovement =
+          Movement.builder().uuid(existingUuid).value(new BigDecimal("200.00")).build();
 
-      when(movementRepositoryPort.findByUuid(existingUuid))
-              .thenReturn(Mono.just(existingMovement));
+      when(movementRepositoryPort.findByUuid(existingUuid)).thenReturn(Mono.just(existingMovement));
 
       StepVerifier.create(movementService.save(newMovement, numAccountFake))
-              .expectErrorMatches(e -> e instanceof EntityNotFoundException
+          .expectErrorMatches(
+              e ->
+                  e instanceof EntityNotFoundException
                       && e.getMessage().contains("Movimiento ya existe"))
-              .verify();
+          .verify();
 
       verify(movementRepositoryPort).findByUuid(existingUuid);
       verify(accountRepositoryPort, never()).findByAccountNum(any());
@@ -198,20 +175,18 @@ class MovementServiceTest {
     @Test
     @DisplayName("should fail when account not found")
     void shouldFailWhenAccountNotFound() {
-      final var movement = Movement.builder()
-              .uuid(movementUuidFake)
-              .value(new BigDecimal("100.00"))
-              .build();
+      final var movement =
+          Movement.builder().uuid(movementUuidFake).value(new BigDecimal("100.00")).build();
 
-      when(movementRepositoryPort.findByUuid(movementUuidFake))
-              .thenReturn(Mono.empty());
-      when(accountRepositoryPort.findByAccountNum(numAccountFake))
-              .thenReturn(Mono.empty());
+      when(movementRepositoryPort.findByUuid(movementUuidFake)).thenReturn(Mono.empty());
+      when(accountRepositoryPort.findByAccountNum(numAccountFake)).thenReturn(Mono.empty());
 
       StepVerifier.create(movementService.save(movement, numAccountFake))
-              .expectErrorMatches(e -> e instanceof EntityNotFoundException
+          .expectErrorMatches(
+              e ->
+                  e instanceof EntityNotFoundException
                       && e.getMessage().contains("Cuenta no encontrada"))
-              .verify();
+          .verify();
 
       verify(accountRepositoryPort).findByAccountNum(numAccountFake);
       verify(accountRepositoryPort, never()).saveOnly(any());
@@ -223,28 +198,59 @@ class MovementServiceTest {
       final var initialFunds = new BigDecimal("100.00");
       final var movementValue = new BigDecimal("-200.00");
 
-      final var account = Account.builder()
-              .id(1L)
-              .numAccount(numAccountFake)
-              .initialFunds(initialFunds)
-              .build();
+      final var account =
+          Account.builder().id(1L).numAccount(numAccountFake).initialFunds(initialFunds).build();
 
-      final var movement = Movement.builder()
-              .uuid(movementUuidFake)
-              .value(movementValue)
-              .build();
+      final var movement = Movement.builder().uuid(movementUuidFake).value(movementValue).build();
 
-      when(movementRepositoryPort.findByUuid(movementUuidFake))
-              .thenReturn(Mono.empty());
-      when(accountRepositoryPort.findByAccountNum(numAccountFake))
-              .thenReturn(Mono.just(account));
+      when(movementRepositoryPort.findByUuid(movementUuidFake)).thenReturn(Mono.empty());
+      when(accountRepositoryPort.findByAccountNum(numAccountFake)).thenReturn(Mono.just(account));
 
       StepVerifier.create(movementService.save(movement, numAccountFake))
-              .expectErrorMatches(e -> e instanceof InsufficientFundsException
+          .expectErrorMatches(
+              e ->
+                  e instanceof InsufficientFundsException
                       && e.getMessage().contains("Saldo insuficiente"))
-              .verify();
+          .verify();
 
       verify(accountRepositoryPort, never()).saveOnly(any());
+    }
+
+    @Test
+    @DisplayName("should allow movement when balance becomes exactly zero")
+    void shouldAllowZeroBalance() {
+      final var initialFunds = new BigDecimal("100.00");
+      final var movementValue = new BigDecimal("-100.00");
+
+      final var account = Account.builder().id(1L).initialFunds(initialFunds).build();
+      final var movement = Movement.builder().value(movementValue).build();
+
+      when(movementRepositoryPort.findByUuid(any())).thenReturn(Mono.empty());
+      when(accountRepositoryPort.findByAccountNum(any())).thenReturn(Mono.just(account));
+      when(accountRepositoryPort.saveOnly(any())).thenReturn(Mono.empty());
+      when(movementRepositoryPort.save(any())).thenReturn(Mono.empty());
+
+      StepVerifier.create(movementService.save(movement, 123L))
+              .verifyComplete();
+
+      verify(movementRepositoryPort).save(argThat(m -> m.getBalance().compareTo(BigDecimal.ZERO) == 0));
+    }
+
+    @Test
+    @DisplayName("should classify zero value movement as Retiro (Boundary Test)")
+    void shouldClassifyZeroAsRetiro() {
+      final var account = Account.builder().id(1L).initialFunds(new BigDecimal("100.00")).build();
+      final var movement = Movement.builder().value(BigDecimal.ZERO).build();
+
+      when(movementRepositoryPort.findByUuid(any())).thenReturn(Mono.empty());
+      when(accountRepositoryPort.findByAccountNum(any())).thenReturn(Mono.just(account));
+      when(accountRepositoryPort.saveOnly(any())).thenReturn(Mono.empty());
+      when(movementRepositoryPort.save(any())).thenReturn(Mono.empty());
+
+      StepVerifier.create(movementService.save(movement, 123L))
+              .verifyComplete();
+
+      verify(movementRepositoryPort).save(argThat(m -> "Retiro".equals(m.getTypeMovement())));
     }
 
     @Test
@@ -253,29 +259,18 @@ class MovementServiceTest {
       final var initialFunds = new BigDecimal("1000.00");
       final var movementValue = new BigDecimal("100.00");
 
-      final var account = Account.builder()
-              .id(1L)
-              .numAccount(numAccountFake)
-              .initialFunds(initialFunds)
-              .build();
+      final var account =
+          Account.builder().id(1L).numAccount(numAccountFake).initialFunds(initialFunds).build();
 
-      final var movement = Movement.builder()
-              .uuid(null)
-              .value(movementValue)
-              .date(LocalDate.now())
-              .build();
+      final var movement =
+          Movement.builder().uuid(null).value(movementValue).date(LocalDate.now()).build();
 
-      when(movementRepositoryPort.findByUuid(null))
-              .thenReturn(Mono.empty());
-      when(accountRepositoryPort.findByAccountNum(numAccountFake))
-              .thenReturn(Mono.just(account));
-      when(accountRepositoryPort.saveOnly(any(Account.class)))
-              .thenReturn(Mono.empty());
-      when(movementRepositoryPort.save(any(Movement.class)))
-              .thenReturn(Mono.empty());
+      when(movementRepositoryPort.findByUuid(null)).thenReturn(Mono.empty());
+      when(accountRepositoryPort.findByAccountNum(numAccountFake)).thenReturn(Mono.just(account));
+      when(accountRepositoryPort.saveOnly(any(Account.class))).thenReturn(Mono.empty());
+      when(movementRepositoryPort.save(any(Movement.class))).thenReturn(Mono.empty());
 
-      StepVerifier.create(movementService.save(movement, numAccountFake))
-              .verifyComplete();
+      StepVerifier.create(movementService.save(movement, numAccountFake)).verifyComplete();
 
       verify(movementRepositoryPort).save(argThat(m -> m.getUuid() != null));
     }
@@ -286,29 +281,18 @@ class MovementServiceTest {
       final var initialFunds = new BigDecimal("1000.00");
       final var movementValue = new BigDecimal("100.00");
 
-      final var account = Account.builder()
-              .id(1L)
-              .numAccount(numAccountFake)
-              .initialFunds(initialFunds)
-              .build();
+      final var account =
+          Account.builder().id(1L).numAccount(numAccountFake).initialFunds(initialFunds).build();
 
-      final var movement = Movement.builder()
-              .uuid(movementUuidFake)
-              .value(movementValue)
-              .date(null)
-              .build();
+      final var movement =
+          Movement.builder().uuid(movementUuidFake).value(movementValue).date(null).build();
 
-      when(movementRepositoryPort.findByUuid(movementUuidFake))
-              .thenReturn(Mono.empty());
-      when(accountRepositoryPort.findByAccountNum(numAccountFake))
-              .thenReturn(Mono.just(account));
-      when(accountRepositoryPort.saveOnly(any(Account.class)))
-              .thenReturn(Mono.empty());
-      when(movementRepositoryPort.save(any(Movement.class)))
-              .thenReturn(Mono.empty());
+      when(movementRepositoryPort.findByUuid(movementUuidFake)).thenReturn(Mono.empty());
+      when(accountRepositoryPort.findByAccountNum(numAccountFake)).thenReturn(Mono.just(account));
+      when(accountRepositoryPort.saveOnly(any(Account.class))).thenReturn(Mono.empty());
+      when(movementRepositoryPort.save(any(Movement.class))).thenReturn(Mono.empty());
 
-      StepVerifier.create(movementService.save(movement, numAccountFake))
-              .verifyComplete();
+      StepVerifier.create(movementService.save(movement, numAccountFake)).verifyComplete();
 
       verify(movementRepositoryPort).save(argThat(m -> m.getDate() != null));
     }
@@ -320,34 +304,26 @@ class MovementServiceTest {
       final var movementValue = new BigDecimal("500.00");
       final var expectedBalance = new BigDecimal("1500.00");
 
-      final var account = Account.builder()
-              .id(1L)
-              .numAccount(numAccountFake)
-              .initialFunds(initialFunds)
-              .build();
+      final var account =
+          Account.builder().id(1L).numAccount(numAccountFake).initialFunds(initialFunds).build();
 
-      final var movement = Movement.builder()
+      final var movement =
+          Movement.builder()
               .uuid(movementUuidFake)
               .value(movementValue)
               .date(LocalDate.now())
               .build();
 
-      when(movementRepositoryPort.findByUuid(movementUuidFake))
-              .thenReturn(Mono.empty());
-      when(accountRepositoryPort.findByAccountNum(numAccountFake))
-              .thenReturn(Mono.just(account));
-      when(accountRepositoryPort.saveOnly(any(Account.class)))
-              .thenReturn(Mono.empty());
+      when(movementRepositoryPort.findByUuid(movementUuidFake)).thenReturn(Mono.empty());
+      when(accountRepositoryPort.findByAccountNum(numAccountFake)).thenReturn(Mono.just(account));
+      when(accountRepositoryPort.saveOnly(any(Account.class))).thenReturn(Mono.empty());
 
-      when(movementRepositoryPort.save(any(Movement.class)))
-              .thenReturn(Mono.empty());
+      when(movementRepositoryPort.save(any(Movement.class))).thenReturn(Mono.empty());
 
-      StepVerifier.create(movementService.save(movement, numAccountFake))
-              .verifyComplete();
+      StepVerifier.create(movementService.save(movement, numAccountFake)).verifyComplete();
 
-      verify(movementRepositoryPort).save(argThat(m ->
-              m.getBalance().compareTo(expectedBalance) == 0
-      ));
+      verify(movementRepositoryPort)
+          .save(argThat(m -> m.getBalance().compareTo(expectedBalance) == 0));
     }
 
     @Test
@@ -356,33 +332,24 @@ class MovementServiceTest {
       final var initialFunds = new BigDecimal("1000.00");
       final var movementValue = new BigDecimal("100.00");
 
-      final var account = Account.builder()
-              .id(1L)
-              .numAccount(numAccountFake)
-              .initialFunds(initialFunds)
-              .build();
+      final var account =
+          Account.builder().id(1L).numAccount(numAccountFake).initialFunds(initialFunds).build();
 
-      final var movement = Movement.builder()
+      final var movement =
+          Movement.builder()
               .uuid(movementUuidFake)
               .value(movementValue)
               .date(LocalDate.now())
               .build();
 
-      when(movementRepositoryPort.findByUuid(movementUuidFake))
-              .thenReturn(Mono.empty());
-      when(accountRepositoryPort.findByAccountNum(numAccountFake))
-              .thenReturn(Mono.just(account));
-      when(accountRepositoryPort.saveOnly(any(Account.class)))
-              .thenReturn(Mono.empty());
-      when(movementRepositoryPort.save(any(Movement.class)))
-              .thenReturn(Mono.empty());
+      when(movementRepositoryPort.findByUuid(movementUuidFake)).thenReturn(Mono.empty());
+      when(accountRepositoryPort.findByAccountNum(numAccountFake)).thenReturn(Mono.just(account));
+      when(accountRepositoryPort.saveOnly(any(Account.class))).thenReturn(Mono.empty());
+      when(movementRepositoryPort.save(any(Movement.class))).thenReturn(Mono.empty());
 
-      StepVerifier.create(movementService.save(movement, numAccountFake))
-              .verifyComplete();
+      StepVerifier.create(movementService.save(movement, numAccountFake)).verifyComplete();
 
-      verify(movementRepositoryPort).save(argThat(m ->
-              "Deposito".equals(m.getTypeMovement())
-      ));
+      verify(movementRepositoryPort).save(argThat(m -> "Deposito".equals(m.getTypeMovement())));
     }
 
     @Test
@@ -391,33 +358,24 @@ class MovementServiceTest {
       final var initialFunds = new BigDecimal("1000.00");
       final var movementValue = new BigDecimal("-100.00");
 
-      final var account = Account.builder()
-              .id(1L)
-              .numAccount(numAccountFake)
-              .initialFunds(initialFunds)
-              .build();
+      final var account =
+          Account.builder().id(1L).numAccount(numAccountFake).initialFunds(initialFunds).build();
 
-      final var movement = Movement.builder()
+      final var movement =
+          Movement.builder()
               .uuid(movementUuidFake)
               .value(movementValue)
               .date(LocalDate.now())
               .build();
 
-      when(movementRepositoryPort.findByUuid(movementUuidFake))
-              .thenReturn(Mono.empty());
-      when(accountRepositoryPort.findByAccountNum(numAccountFake))
-              .thenReturn(Mono.just(account));
-      when(accountRepositoryPort.saveOnly(any(Account.class)))
-              .thenReturn(Mono.empty());
-      when(movementRepositoryPort.save(any(Movement.class)))
-              .thenReturn(Mono.empty());
+      when(movementRepositoryPort.findByUuid(movementUuidFake)).thenReturn(Mono.empty());
+      when(accountRepositoryPort.findByAccountNum(numAccountFake)).thenReturn(Mono.just(account));
+      when(accountRepositoryPort.saveOnly(any(Account.class))).thenReturn(Mono.empty());
+      when(movementRepositoryPort.save(any(Movement.class))).thenReturn(Mono.empty());
 
-      StepVerifier.create(movementService.save(movement, numAccountFake))
-              .verifyComplete();
+      StepVerifier.create(movementService.save(movement, numAccountFake)).verifyComplete();
 
-      verify(movementRepositoryPort).save(argThat(m ->
-              "Retiro".equals(m.getTypeMovement())
-      ));
+      verify(movementRepositoryPort).save(argThat(m -> "Retiro".equals(m.getTypeMovement())));
     }
 
     @Test
@@ -426,29 +384,22 @@ class MovementServiceTest {
       final var initialFunds = new BigDecimal("1000.00");
       final var movementValue = BigDecimal.ZERO;
 
-      final var account = Account.builder()
-              .id(1L)
-              .numAccount(numAccountFake)
-              .initialFunds(initialFunds)
-              .build();
+      final var account =
+          Account.builder().id(1L).numAccount(numAccountFake).initialFunds(initialFunds).build();
 
-      final var movement = Movement.builder()
+      final var movement =
+          Movement.builder()
               .uuid(movementUuidFake)
               .value(movementValue)
               .date(LocalDate.now())
               .build();
 
-      when(movementRepositoryPort.findByUuid(movementUuidFake))
-              .thenReturn(Mono.empty());
-      when(accountRepositoryPort.findByAccountNum(numAccountFake))
-              .thenReturn(Mono.just(account));
-      when(accountRepositoryPort.saveOnly(any(Account.class)))
-              .thenReturn(Mono.empty());
-      when(movementRepositoryPort.save(any(Movement.class)))
-              .thenReturn(Mono.empty());
+      when(movementRepositoryPort.findByUuid(movementUuidFake)).thenReturn(Mono.empty());
+      when(accountRepositoryPort.findByAccountNum(numAccountFake)).thenReturn(Mono.just(account));
+      when(accountRepositoryPort.saveOnly(any(Account.class))).thenReturn(Mono.empty());
+      when(movementRepositoryPort.save(any(Movement.class))).thenReturn(Mono.empty());
 
-      StepVerifier.create(movementService.save(movement, numAccountFake))
-              .verifyComplete();
+      StepVerifier.create(movementService.save(movement, numAccountFake)).verifyComplete();
 
       verify(movementRepositoryPort).save(any(Movement.class));
     }
@@ -462,25 +413,25 @@ class MovementServiceTest {
     @Test
     @DisplayName("should update existing movement")
     void shouldUpdateMovement() {
-      final var movement = Movement.builder()
+      final var movement =
+          Movement.builder()
               .uuid(movementUuidFake)
               .value(new BigDecimal("100.00"))
               .typeMovement("Deposito")
               .build();
 
-      final var existingMovement = Movement.builder()
+      final var existingMovement =
+          Movement.builder()
               .uuid(movementUuidFake)
               .value(new BigDecimal("50.00"))
               .typeMovement("Retiro")
               .build();
 
       when(movementRepositoryPort.findByUuid(movementUuidFake))
-              .thenReturn(Mono.just(existingMovement));
-      when(movementRepositoryPort.update(existingMovement))
-              .thenReturn(Mono.empty());
+          .thenReturn(Mono.just(existingMovement));
+      when(movementRepositoryPort.update(existingMovement)).thenReturn(Mono.empty());
 
-      StepVerifier.create(movementService.update(movement))
-              .verifyComplete();
+      StepVerifier.create(movementService.update(movement)).verifyComplete();
 
       verify(movementRepositoryPort).findByUuid(movementUuidFake);
       verify(movementRepositoryPort).update(any(Movement.class));
@@ -489,18 +440,17 @@ class MovementServiceTest {
     @Test
     @DisplayName("should fail when movement not found during update")
     void shouldFailWhenMovementNotFoundDuringUpdate() {
-      final var movement = Movement.builder()
-              .uuid(movementUuidFake)
-              .value(new BigDecimal("100.00"))
-              .build();
+      final var movement =
+          Movement.builder().uuid(movementUuidFake).value(new BigDecimal("100.00")).build();
 
-      when(movementRepositoryPort.findByUuid(movementUuidFake))
-              .thenReturn(Mono.empty());
+      when(movementRepositoryPort.findByUuid(movementUuidFake)).thenReturn(Mono.empty());
 
       StepVerifier.create(movementService.update(movement))
-              .expectErrorMatches(e -> e instanceof EntityNotFoundException
+          .expectErrorMatches(
+              e ->
+                  e instanceof EntityNotFoundException
                       && e.getMessage().contains("movimiento no encontrado"))
-              .verify();
+          .verify();
 
       verify(movementRepositoryPort).findByUuid(movementUuidFake);
       verify(movementRepositoryPort, never()).update(any());
@@ -515,18 +465,13 @@ class MovementServiceTest {
     @Test
     @DisplayName("should delete existing movement")
     void shouldDeleteMovement() {
-      final var movement = Movement.builder()
-              .uuid(movementUuidFake)
-              .value(new BigDecimal("100.00"))
-              .build();
+      final var movement =
+          Movement.builder().uuid(movementUuidFake).value(new BigDecimal("100.00")).build();
 
-      when(movementRepositoryPort.findByUuid(movementUuidFake))
-              .thenReturn(Mono.just(movement));
-      when(movementRepositoryPort.delete(movementUuidFake))
-              .thenReturn(Mono.empty());
+      when(movementRepositoryPort.findByUuid(movementUuidFake)).thenReturn(Mono.just(movement));
+      when(movementRepositoryPort.delete(movementUuidFake)).thenReturn(Mono.empty());
 
-      StepVerifier.create(movementService.delete(movementUuidFake))
-              .verifyComplete();
+      StepVerifier.create(movementService.delete(movementUuidFake)).verifyComplete();
 
       verify(movementRepositoryPort).findByUuid(movementUuidFake);
       verify(movementRepositoryPort).delete(movementUuidFake);
@@ -535,13 +480,14 @@ class MovementServiceTest {
     @Test
     @DisplayName("should fail when movement not found during delete")
     void shouldFailWhenMovementNotFoundDuringDelete() {
-      when(movementRepositoryPort.findByUuid(movementUuidFake))
-              .thenReturn(Mono.empty());
+      when(movementRepositoryPort.findByUuid(movementUuidFake)).thenReturn(Mono.empty());
 
       StepVerifier.create(movementService.delete(movementUuidFake))
-              .expectErrorMatches(e -> e instanceof EntityNotFoundException
+          .expectErrorMatches(
+              e ->
+                  e instanceof EntityNotFoundException
                       && e.getMessage().contains("movimiento no encontrado"))
-              .verify();
+          .verify();
 
       verify(movementRepositoryPort).findByUuid(movementUuidFake);
       verify(movementRepositoryPort, never()).delete(any());

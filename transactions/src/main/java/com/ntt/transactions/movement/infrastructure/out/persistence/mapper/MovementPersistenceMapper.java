@@ -9,6 +9,7 @@ import org.mapstruct.MappingTarget;
 @Mapper(componentModel = "spring")
 public interface MovementPersistenceMapper {
   Movement toMovement(MovementEntity movementEntity);
+
   MovementEntity toMovementEntity(Movement movement);
 
   @Mapping(target = "uuid", ignore = true)

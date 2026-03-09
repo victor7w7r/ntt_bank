@@ -10,12 +10,7 @@ import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface AccountMessagingInputMapper {
-  StatusAccountReceiveRes toStatusAccountReceiveRes(
-          StatusAccountReceive statusAccountReceive
-  );
+  StatusAccountReceiveRes toStatusAccountReceiveRes(StatusAccountReceive statusAccountReceive);
 
-  StatusAccountSend toStatusAccountSend(
-          StatusAccountSendReq statusAccountSendReq
-  );
-
+  StatusAccountSend toStatusAccountSend(StatusAccountSendReq statusAccountSendReq);
 }

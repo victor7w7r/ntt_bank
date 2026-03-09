@@ -16,8 +16,7 @@ public class AccountConfig {
       AccountSearchUseCase accountSearchUseCase,
       AccountDeleteUseCase accountDeleteUseCase,
       AccountMessagingInputMapper accountMessagingInputMapper,
-      ObjectMapper objectMapper
-  ) {
+      ObjectMapper objectMapper) {
     return new AccountMessagingInputAdapter(
         accountDeleteUseCase, accountSearchUseCase, accountMessagingInputMapper, objectMapper);
   }

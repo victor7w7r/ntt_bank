@@ -1,7 +1,6 @@
 package com.ntt.transactions.movement.application.service;
 
 import com.ntt.transactions.account.application.port.out.AccountRepositoryPort;
-import com.ntt.transactions.common.exception.AccountExistsException;
 import com.ntt.transactions.common.exception.EntityNotFoundException;
 import com.ntt.transactions.common.exception.InsufficientFundsException;
 import com.ntt.transactions.movement.application.port.in.MovementCreateUseCase;

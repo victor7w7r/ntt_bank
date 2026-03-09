@@ -5,10 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 import org.springframework.data.annotation.Id;
-import org.springframework.data.relational.core.mapping.Table;
 import org.springframework.data.relational.core.mapping.Column;
+import org.springframework.data.relational.core.mapping.Table;
 
 @Table("account")
 @Data
@@ -16,8 +15,7 @@ import org.springframework.data.relational.core.mapping.Column;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AccountEntity {
-  @Id
-  private Long id;
+  @Id private Long id;
 
   @Column("num_account")
   private Long numAccount;
@@ -27,6 +25,7 @@ public class AccountEntity {
 
   @Column("initial_funds")
   private BigDecimal initialFunds;
+
   private Boolean status;
 
   @Column("customer_ref")

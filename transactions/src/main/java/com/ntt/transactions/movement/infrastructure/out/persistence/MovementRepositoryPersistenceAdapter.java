@@ -19,52 +19,48 @@ public class MovementRepositoryPersistenceAdapter implements MovementRepositoryP
 
   @Override
   public Flux<Movement> findAll() {
-    return movementRepository
-            .findAll()
-            .map(movementPersistenceMapper::toMovement);
+    return movementRepository.findAll().map(movementPersistenceMapper::toMovement);
   }
 
- @Override
+  @Override
   public Flux<Movement> findByAccountMovement(Long accountMovement) {
     return movementRepository
-            .findByAccountMovement(accountMovement)
-            .map(movementPersistenceMapper::toMovement);
+        .findByAccountMovement(accountMovement)
+        .map(movementPersistenceMapper::toMovement);
   }
 
   @Override
   public Mono<Movement> findByUuid(String uuid) {
-    return movementRepository
-            .findByUuid(uuid)
-            .map(movementPersistenceMapper::toMovement);
+    return movementRepository.findByUuid(uuid).map(movementPersistenceMapper::toMovement);
   }
 
   @Override
   public Mono<Void> save(Movement movement) {
     return Mono.just(movement)
-            .map(movementPersistenceMapper::toMovementEntity)
-            .flatMap(movementRepository::save)
-            .then();
+        .map(movementPersistenceMapper::toMovementEntity)
+        .flatMap(movementRepository::save)
+        .then();
   }
 
   @Override
   public Mono<Void> update(Movement movement) {
-    return movementRepository.findByUuid(movement.getUuid())
-            .flatMap(movementEntity -> {
+    return movementRepository
+        .findByUuid(movement.getUuid())
+        .flatMap(
+            movementEntity -> {
               movementPersistenceMapper.update(movement, movementEntity);
               return movementRepository.save(movementEntity);
             })
-            .switchIfEmpty(Mono.error(new MovementNotFoundException("ERROR: Movimiento no encontrado")))
-            .then();
-
+        .switchIfEmpty(Mono.error(new MovementNotFoundException("ERROR: Movimiento no encontrado")))
+        .then();
   }
 
   @Override
   public Mono<Void> delete(String uuid) {
-    return movementRepository.findByUuid(uuid)
-            .flatMap(movementEntity ->
-                    movementRepository.deleteByUuid(movementEntity.getUuid())
-            )
-            .switchIfEmpty(Mono.error(new MovementNotFoundException("ERROR: Movimiento no encontrado")))
-            .then();
+    return movementRepository
+        .findByUuid(uuid)
+        .flatMap(movementEntity -> movementRepository.deleteByUuid(movementEntity.getUuid()))
+        .switchIfEmpty(Mono.error(new MovementNotFoundException("ERROR: Movimiento no encontrado")))
+        .then();
   }
 }

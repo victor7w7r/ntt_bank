@@ -40,7 +40,7 @@ public class CustomerService
         .findByIdNumber(idNumber)
         .map(Customer::getIdNumber)
         .switchIfEmpty(Mono.defer(() -> {
-          log.warn("Al recibir el idNumber del customer, no se encontró: {}", idNumber);
+          log.warn("To receive the idNumber from customer, did not found {}", idNumber);
           return Mono.just(0L);
         }));
   }

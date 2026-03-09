@@ -1,6 +1,5 @@
 package com.ntt.transactions.account.infrastructure.in.messaging.entity;
 
-import java.time.LocalDate;
 import lombok.*;
 
 @Builder

@@ -32,59 +32,56 @@ public class AccountRestAdapter {
   @GetMapping
   private Flux<AccountResponse> findAll() {
     return accountSearchUseCase
-            .findAll()
-            .doFirst(() -> log.info("Querying all accounts"))
-            .map(accountRestMapper::toAccountResponse);
+        .findAll()
+        .doFirst(() -> log.info("Querying all accounts"))
+        .map(accountRestMapper::toAccountResponse);
   }
 
   @PostMapping("{idNumber}")
   private Mono<ResponseEntity<?>> saveAccount(
-          @Valid @RequestBody AccountRequest request,
-          @PathVariable Long idNumber
-  ) {
+      @Valid @RequestBody AccountRequest request, @PathVariable Long idNumber) {
     return Mono.just(request)
-            .doFirst(() -> log.info("Creating account {}", request.getNumAccount()))
-            .map(accountRestMapper::toAccount)
-            .flatMap(account -> accountCreateUseCase.save(account, idNumber))
-            .then(Mono.fromCallable(() ->
-                    ResponseEntity.status(201).body(
+        .doFirst(() -> log.info("Creating account {}", request.getNumAccount()))
+        .map(accountRestMapper::toAccount)
+        .flatMap(account -> accountCreateUseCase.save(account, idNumber))
+        .then(
+            Mono.fromCallable(
+                () ->
+                    ResponseEntity.status(201)
+                        .body(
                             AccountOperationResponse.builder()
-                                    .message("Cuenta guardada exitosamente")
-                                    .build()
-                    )
-            ));
+                                .message("Cuenta guardada exitosamente")
+                                .build())));
   }
 
   @PutMapping
-  private Mono<ResponseEntity<?>> updateAccount(
-          @Valid @RequestBody AccountRequest request
-  ) {
+  private Mono<ResponseEntity<?>> updateAccount(@Valid @RequestBody AccountRequest request) {
     return Mono.just(request)
-            .doFirst(() -> log.info("Updating account {}", request.getNumAccount()))
-            .map(accountRestMapper::toAccount)
-            .flatMap(accountUpdateUseCase::update)
-            .then(Mono.fromCallable(() ->
-                    ResponseEntity.status(201).body(
+        .doFirst(() -> log.info("Updating account {}", request.getNumAccount()))
+        .map(accountRestMapper::toAccount)
+        .flatMap(accountUpdateUseCase::update)
+        .then(
+            Mono.fromCallable(
+                () ->
+                    ResponseEntity.status(201)
+                        .body(
                             AccountOperationResponse.builder()
-                                    .message("Cuenta actualizada exitosamente")
-                                    .build()
-                    )
-            ));
+                                .message("Cuenta actualizada exitosamente")
+                                .build())));
   }
 
   @DeleteMapping("{numAccount}")
-  private Mono<ResponseEntity<?>> deleteAccount(
-          @PathVariable Long numAccount
-  ) {
-    return accountDeleteUseCase.delete(numAccount)
-            .doFirst(() -> log.info("Deleting account {}", numAccount))
-            .then(Mono.fromCallable(() ->
-                    ResponseEntity.status(202).body(
+  private Mono<ResponseEntity<?>> deleteAccount(@PathVariable Long numAccount) {
+    return accountDeleteUseCase
+        .delete(numAccount)
+        .doFirst(() -> log.info("Deleting account {}", numAccount))
+        .then(
+            Mono.fromCallable(
+                () ->
+                    ResponseEntity.status(202)
+                        .body(
                             AccountOperationResponse.builder()
-                                    .message("Cuenta eliminada exitosamente")
-                                    .build()
-                    )
-            ));
-
+                                .message("Cuenta eliminada exitosamente")
+                                .build())));
   }
 }

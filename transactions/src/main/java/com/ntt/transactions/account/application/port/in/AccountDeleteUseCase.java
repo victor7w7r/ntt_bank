@@ -4,5 +4,6 @@ import reactor.core.publisher.Mono;
 
 public interface AccountDeleteUseCase {
   Mono<Void> delete(Long numAccount);
+
   Mono<Long> deleteByCustomerRef(Long customerRef);
 }

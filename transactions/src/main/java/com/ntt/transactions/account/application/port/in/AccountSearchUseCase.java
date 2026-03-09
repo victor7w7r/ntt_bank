@@ -7,5 +7,6 @@ import reactor.core.publisher.Flux;
 
 public interface AccountSearchUseCase {
   Flux<Account> findAll();
+
   Flux<StatusAccountReceive> requestStatusAccount(StatusAccountSend req);
 }

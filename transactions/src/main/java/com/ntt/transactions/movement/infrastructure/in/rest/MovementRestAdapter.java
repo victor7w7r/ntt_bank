@@ -32,58 +32,56 @@ public class MovementRestAdapter {
   @GetMapping
   private Flux<MovementResponse> findAll() {
     return movementSearchUseCase
-            .findAll()
-            .doFirst(() -> log.info("Querying all movements"))
-            .map(movementRestMapper::toMovementResponse);
+        .findAll()
+        .doFirst(() -> log.info("Querying all movements"))
+        .map(movementRestMapper::toMovementResponse);
   }
 
   @PostMapping("{numAccount}")
   private Mono<ResponseEntity<?>> saveMovement(
-          @RequestBody @Valid MovementRequest request,
-          @PathVariable Long numAccount
-  ) {
+      @RequestBody @Valid MovementRequest request, @PathVariable Long numAccount) {
     return Mono.just(request)
-            .doFirst(() -> log.info("Creating movement with num account {}", numAccount))
-            .map(movementRestMapper::toMovement)
-            .flatMap((movement) -> movementCreateUseCase.save(movement, numAccount))
-            .then(Mono.fromCallable(() ->
-                    ResponseEntity.status(201).body(
+        .doFirst(() -> log.info("Creating movement with num account {}", numAccount))
+        .map(movementRestMapper::toMovement)
+        .flatMap((movement) -> movementCreateUseCase.save(movement, numAccount))
+        .then(
+            Mono.fromCallable(
+                () ->
+                    ResponseEntity.status(201)
+                        .body(
                             MovementOperationResponse.builder()
-                                    .message("Movimiento guardado exitosamente")
-                                    .build()
-                    )
-            ));
+                                .message("Movimiento guardado exitosamente")
+                                .build())));
   }
 
   @PutMapping
-  private Mono<ResponseEntity<?>> updateMovement(
-          @RequestBody @Valid MovementRequest request
-  ) {
+  private Mono<ResponseEntity<?>> updateMovement(@RequestBody @Valid MovementRequest request) {
     return Mono.just(request)
-            .doFirst(() -> log.info("Updating movement {}", request.getUuid()))
-            .map(movementRestMapper::toMovement)
-            .flatMap(movementUpdateUseCase::update)
-            .then(Mono.fromCallable(() ->
-                    ResponseEntity.status(201).body(
+        .doFirst(() -> log.info("Updating movement {}", request.getUuid()))
+        .map(movementRestMapper::toMovement)
+        .flatMap(movementUpdateUseCase::update)
+        .then(
+            Mono.fromCallable(
+                () ->
+                    ResponseEntity.status(201)
+                        .body(
                             MovementOperationResponse.builder()
-                                    .message("Movimiento actualizado exitosamente")
-                                    .build()
-                    )
-            ));
+                                .message("Movimiento actualizado exitosamente")
+                                .build())));
   }
 
   @DeleteMapping("{uuid}")
-  private Mono<ResponseEntity<?>> deleteMovement(
-          @PathVariable String uuid
-  ) {
-    return movementDeleteUseCase.delete(uuid)
-            .doFirst(() -> log.info("Deleting movement {}", uuid))
-            .then(Mono.fromCallable(() ->
-                    ResponseEntity.status(202).body(
+  private Mono<ResponseEntity<?>> deleteMovement(@PathVariable String uuid) {
+    return movementDeleteUseCase
+        .delete(uuid)
+        .doFirst(() -> log.info("Deleting movement {}", uuid))
+        .then(
+            Mono.fromCallable(
+                () ->
+                    ResponseEntity.status(202)
+                        .body(
                             MovementOperationResponse.builder()
-                                    .message("Movimiento eliminado exitosamente")
-                                    .build()
-                    )
-            ));
+                                .message("Movimiento eliminado exitosamente")
+                                .build())));
   }
 }
