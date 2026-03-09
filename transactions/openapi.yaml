@@ -1,0 +1,255 @@
+openapi: 3.0.3
+info:
+  title: Transactions API
+  version: 1.0.0
+paths:
+  /api/v1/accounts:
+    get:
+      summary: Listar todas las cuentas
+      operationId: findAll
+      responses:
+        "200":
+          description: Lista de cuentas obtenida con éxito
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AccountResponse"
+    put:
+      summary: Actualizar una cuenta existente
+      operationId: updateAccount
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AccountRequest"
+      responses:
+        "201":
+          description: Cuenta actualizada exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AccountOperationResponse"
+  /api/v1/accounts/{idNumber}:
+    post:
+      summary: Crear una nueva cuenta para un cliente específico
+      operationId: saveAccount
+      parameters:
+        - name: idNumber
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AccountRequest"
+      responses:
+        "201":
+          description: Cuenta creada exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AccountOperationResponse"
+  /api/v1/accounts/{numAccount}:
+    delete:
+      summary: Eliminar una cuenta por su número de cuenta
+      operationId: deleteAccount
+      parameters:
+        - name: numAccount
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "202":
+          description: Cuenta eliminada exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AccountOperationResponse"
+  /api/v1/movements:
+    get:
+      summary: Consultar todos los movimientos
+      operationId: findAllMovements
+      responses:
+        "200":
+          description: Lista de movimientos recuperada
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/MovementResponse"
+    put:
+      summary: Actualizar un movimiento existente
+      operationId: updateMovement
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MovementRequest"
+      responses:
+        "201":
+          description: Movimiento actualizado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MovementOperationResponse"
+  /api/v1/movements/{numAccount}:
+    post:
+      summary: Crear un nuevo movimiento para una cuenta específica
+      operationId: saveMovement
+      parameters:
+        - name: numAccount
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MovementRequest"
+      responses:
+        "201":
+          description: Movimiento creado exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MovementOperationResponse"
+  /api/v1/movements/{uuid}:
+    delete:
+      summary: Eliminar un movimiento por su UUID
+      operationId: deleteMovement
+      parameters:
+        - name: uuid
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "202":
+          description: Eliminación aceptada
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MovementOperationResponse"
+
+components:
+  schemas:
+    Movement:
+      type: object
+      properties:
+        date:
+          type: string
+          format: date
+        typeMovement:
+          type: string
+        value:
+          type: number
+          format: double
+        balance:
+          type: number
+          format: double
+        uuid:
+          type: string
+          format: uuid
+        accountMovement:
+          type: string
+    AccountResponse:
+      type: object
+      properties:
+        numAccount:
+          type: integer
+          format: int64
+        accountType:
+          type: string
+        initialFunds:
+          type: number
+          format: double
+        status:
+          type: boolean
+        movements:
+          type: array
+          items:
+            $ref: "#/components/schemas/Movement"
+    AccountRequest:
+      type: object
+      required:
+        - numAccount
+        - accountType
+        - initialFunds
+      properties:
+        numAccount:
+          type: integer
+          format: int64
+        accountType:
+          type: string
+        initialFunds:
+          type: number
+          format: double
+        customerRef:
+          type: integer
+          format: int64
+        status:
+          type: boolean
+    AccountOperationResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "Operación realizada con éxito"
+    MovementResponse:
+      type: object
+      properties:
+        date:
+          type: string
+          format: date
+        typeMovement:
+          type: string
+        value:
+          type: number
+          format: double
+        balance:
+          type: number
+          format: double
+        uuid:
+          type: string
+          format: uuid
+    MovementRequest:
+      type: object
+      required:
+        - date
+        - value
+      properties:
+        date:
+          type: string
+          format: date
+        typeMovement:
+          type: string
+        value:
+          type: number
+          format: double
+        balance:
+          type: number
+          format: double
+        uuid:
+          type: string
+          format: uuid
+    MovementOperationResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "Movimiento procesado correctamente"

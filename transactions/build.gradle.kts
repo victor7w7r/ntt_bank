@@ -2,6 +2,7 @@ plugins {
     java
     id("org.springframework.boot") version "4.0.3"
     id("io.spring.dependency-management") version "1.1.7"
+    id("info.solidsoft.pitest") version "1.19.0-rc.3"
 }
 
 group = "com.ntt"
@@ -32,6 +33,8 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.springframework.boot:spring-boot-starter-data-r2dbc")
     developmentOnly("org.springframework.boot:spring-boot-devtools")
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.5")
+    implementation("org.springdoc:springdoc-openapi-starter-webflux-ui:2.8.5")
 
     implementation("org.mapstruct:mapstruct:1.6.3")
     annotationProcessor("org.projectlombok:lombok")

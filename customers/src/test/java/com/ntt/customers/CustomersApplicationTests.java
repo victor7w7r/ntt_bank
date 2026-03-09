@@ -18,6 +18,6 @@ class CustomersApplicationTests {
 
   @Test
   void contextLoadsTest_contextLoadsSuccessfully() {
-    assertNotNull(context, "El contexto de la aplicación no debe ser nulo");
+    assertNotNull(context, "The application context should not be null");
   }
 }

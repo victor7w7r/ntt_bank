@@ -1,0 +1,192 @@
+openapi: 3.0.3
+info:
+  title: Customers API
+  version: 1.0.0
+paths:
+  /api/v1/customers:
+    get:
+      summary: Obtener todos los clientes
+      operationId: getAllCustomers
+      responses:
+        "200":
+          description: Lista de clientes obtenida con éxito
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CustomerListResponse"
+    post:
+      summary: Crear un nuevo cliente
+      operationId: saveCustomer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CustomerRequest"
+      responses:
+        "201":
+          description: Cliente guardado exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CustomerOperationResponse"
+    put:
+      summary: Actualizar un cliente existente
+      operationId: updateCustomer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CustomerRequest"
+      responses:
+        "201":
+          description: Cliente actualizado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CustomerOperationResponse"
+  /api/v1/customers/{idNumber}:
+    delete:
+      summary: Eliminar un cliente por su número de identificación
+      operationId: deleteCustomer
+      parameters:
+        - name: idNumber
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "202":
+          description: Cliente eliminado (Aceptado)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CustomerOperationResponse"
+  /api/v1/customers/reports/{idNumber}:
+    get:
+      summary: Obtener estado de cuenta de un cliente por rango de fechas
+      operationId: getAccountStatus
+      parameters:
+        - name: idNumber
+          in: path
+          required: true
+          description: Cédula o ID del cliente
+          schema:
+            type: integer
+            format: int64
+        - name: startDate
+          in: query
+          required: true
+          description: Fecha de inicio del reporte
+          schema:
+            type: string
+            format: date
+        - name: endDate
+          in: query
+          required: true
+          description: Fecha de fin del reporte
+          schema:
+            type: string
+            format: date
+      responses:
+        "200":
+          description: Listado de movimientos encontrado
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/StatusAccountReceiveRes"
+components:
+  schemas:
+    CustomerResponse:
+      type: object
+      properties:
+        name:
+          type: string
+          example: "Juan Pérez"
+        gender:
+          type: string
+          example: "Masculino"
+        age:
+          type: integer
+          format: int32
+          example: 30
+        idNumber:
+          type: integer
+          format: int64
+          example: 1712345678
+        address:
+          type: string
+          example: "Av. Siempre Viva 123"
+        phone:
+          type: string
+          example: "0998765432"
+        password:
+          type: string
+          format: password
+        status:
+          type: boolean
+          example: true
+    CustomerRequest:
+      type: object
+      required: [name, gender, age, idNumber, address, phone, password]
+      properties:
+        name:
+          type: string
+        gender:
+          type: string
+        age:
+          type: integer
+        idNumber:
+          type: integer
+          format: int64
+        address:
+          type: string
+        phone:
+          type: string
+        password:
+          type: string
+          format: password
+        status:
+          type: boolean
+    CustomerListResponse:
+      type: array
+      items:
+        $ref: "#/components/schemas/CustomerResponse"
+    CustomerOperationResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "Operación realizada exitosamente"
+    StatusAccountReceiveRes:
+      type: object
+      properties:
+        date:
+          type: string
+          format: date
+          example: "2026-03-08"
+        customer:
+          type: string
+          example: "Juan Pérez"
+        numAccount:
+          type: integer
+          format: int64
+          example: 123456789
+        accountType:
+          type: string
+          example: "Ahorros"
+        movementType:
+          type: string
+          example: "Débito"
+        movement:
+          type: number
+          format: double
+          example: 50.25
+        balance:
+          type: number
+          format: double
+          example: 1500.75
