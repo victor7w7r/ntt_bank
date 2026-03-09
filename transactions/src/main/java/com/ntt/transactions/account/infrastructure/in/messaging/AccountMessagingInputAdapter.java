@@ -6,35 +6,41 @@ import com.ntt.transactions.account.infrastructure.in.messaging.entity.StatusAcc
 import com.ntt.transactions.account.infrastructure.in.messaging.entity.StatusAccountSendReq;
 import com.ntt.transactions.account.infrastructure.in.messaging.mapper.AccountMessagingInputMapper;
 import java.util.List;
-import java.util.function.Function;
+import com.ntt.transactions.common.config.BrokerConfig;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.messaging.handler.annotation.Payload;
-import org.springframework.stereotype.Component;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
+import tools.jackson.databind.ObjectMapper;
 
 @Configuration
+@Slf4j
 @RequiredArgsConstructor
 public class AccountMessagingInputAdapter {
 
   private final AccountDeleteUseCase accountDeleteUseCase;
   private final AccountSearchUseCase accountSearchUseCase;
   private final AccountMessagingInputMapper accountMessagingInputMapper;
+  private final ObjectMapper objectMapper;
 
-  @Bean
-  public Function<Mono<Long>, Mono<Long>> deleteAccountReceiver() {
-    return flux -> flux.flatMap(accountDeleteUseCase::deleteByCustomerRef);
+  @RabbitListener(queues = BrokerConfig.CUSTOMER_ERASE_QUEUE)
+  public Long deleteAccountPerQueue(String message) {
+    Long clientRef = Long.parseLong(message);
+    return accountDeleteUseCase.deleteByCustomerRef(clientRef).block();
   }
 
-  @Bean
-  public Function<Flux<StatusAccountSendReq>, Flux<StatusAccountReceiveRes>> statusAccountReceiver() {
-    return flux -> flux.flatMap(req ->
-       accountSearchUseCase.requestStatusAccount(accountMessagingInputMapper.toStatusAccountSend(req))
-              .map(accountMessagingInputMapper::toStatusAccountReceiveRes)
-    );
+  @RabbitListener(queues = BrokerConfig.ACCOUNT_STATUS_QUEUE)
+  public String requestEstadoAccount(String message) throws Exception {
+    log.info("Received message: {}", message);
+    StatusAccountSendReq req = objectMapper.readValue(message, StatusAccountSendReq.class);
+    List<StatusAccountReceiveRes> result = accountSearchUseCase
+            .requestStatusAccount(accountMessagingInputMapper.toStatusAccountSend(req))
+            .map(accountMessagingInputMapper::toStatusAccountReceiveRes)
+            .collectList()
+            .block();
+    final var res = objectMapper.writeValueAsString(result);
+    log.info("Sending response {}",  res);
+    return res;
   }
 }

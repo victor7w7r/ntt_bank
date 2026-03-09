@@ -11,13 +11,14 @@ import com.ntt.transactions.account.domain.model.StatusAccountReceive;
 import com.ntt.transactions.account.domain.model.StatusAccountSend;
 import com.ntt.transactions.common.exception.AccountExistsException;
 import com.ntt.transactions.common.exception.EntityNotFoundException;
+import com.ntt.transactions.movement.application.port.out.MovementRepositoryPort;
+
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import reactor.util.function.Tuple2;
-import reactor.util.function.Tuples;
 
 @Service
 @RequiredArgsConstructor
@@ -29,12 +30,22 @@ public class AccountService
 
   private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy");
   private final AccountRepositoryPort accountRepositoryPort;
+  private final MovementRepositoryPort movementRepositoryPort;
   private final AccountMessagingPort accountMessagingPort;
 
   @Override
   public Flux<Account> findAll() {
-    return accountRepositoryPort.findAll();
-  }
+    return accountRepositoryPort
+      .findAll()
+      .flatMap(account ->
+        movementRepositoryPort.findByAccountMovement(account.getId())
+          .collectList()
+          .map(movements -> {
+            account.setMovements(movements);
+            return account;
+          })
+      );
+}
 
   @Override
   public Mono<Void> update(Account account) {
@@ -48,12 +59,12 @@ public class AccountService
   public Mono<Void> delete(Long numAccount) {
     return accountRepositoryPort
         .findByAccountNum(numAccount)
-        .switchIfEmpty(Mono.error(new EntityNotFoundException("ERROR: Cliente no encontrado")))
+        .switchIfEmpty(Mono.error(new EntityNotFoundException("ERROR: Cuenta no encontrada")))
         .flatMap(it -> accountRepositoryPort.deleteByNumAccount(numAccount));
   }
 
   @Override
-  public Mono<Void> save(Account account, String idNumber) {
+  public Mono<Void> save(Account account, Long idNumber) {
     return accountRepositoryPort
         .findByAccountNum(account.getNumAccount())
         .flatMap(existing -> Mono.<Long>error(new AccountExistsException("ERROR: Cuenta ya existe")))
@@ -80,35 +91,31 @@ public class AccountService
             });
   }
 
-
+  //Reportes
   @Override
   public Flux<StatusAccountReceive> requestStatusAccount(StatusAccountSend req) {
     return accountRepositoryPort
-        .findAllByCustomerRef(req.getCustomerRef())
-        .flatMap(
-            account ->
-                Flux.fromIterable(account.getMovementEntities())
-                    .filter(
-                        movement -> {
-                          final var date = movement.getDate();
-                          return !date.isBefore(req.getStartDate())
-                              && !date.isAfter(req.getEndDate());
-                        })
-                    .map(
-                        movement -> {
-                          var initialBalance = movement.getBalance();
-                          var balanceDiff = initialBalance.add(movement.getValue());
-
-                          return StatusAccountReceive.builder()
-                              .date(movement.getDate().format(FORMATTER))
-                              .customer(req.getNameCustomer())
-                              .numAccount(account.getNumAccount())
-                              .accountType(account.getAccountType())
-                              .typeMovement(movement.getTypeMovement())
-                              .movementQuantity(movement.getValue())
-                              .balance(movement.getBalance())
-                              .actualBalance(balanceDiff)
-                              .build();
-                        }));
+            .findAllByCustomerRef(req.getCustomerRef())
+            .flatMap(account -> movementRepositoryPort.findByAccountMovement(account.getId())
+            .filter(movement -> {
+              final var date = movement.getDate();
+              return !date.isBefore(LocalDate.parse(req.getStartDate()))
+                  && !date.isAfter(LocalDate.parse(req.getEndDate()));
+            })
+            .map(movement -> {
+              var initialBalance = movement.getBalance();
+              var balanceDiff = initialBalance.add(movement.getValue());
+              return StatusAccountReceive.builder()
+                      .date(movement.getDate().format(FORMATTER))
+                      .customer(req.getCustomerName())
+                      .numAccount(account.getNumAccount())
+                      .accountType(account.getAccountType())
+                      .movementType(movement.getTypeMovement())
+                      .movement(movement.getValue())
+                      .balance(movement.getBalance())
+                      .availableFunds(balanceDiff)
+                      .build();
+            })
+          );
   }
 }

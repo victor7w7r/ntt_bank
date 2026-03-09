@@ -40,7 +40,7 @@ public class AccountRestAdapter {
   @PostMapping("{idNumber}")
   private Mono<ResponseEntity<?>> saveAccount(
           @Valid @RequestBody AccountRequest request,
-          @PathVariable String idNumber
+          @PathVariable Long idNumber
   ) {
     return Mono.just(request)
             .doFirst(() -> log.info("Creating account {}", request.getNumAccount()))
@@ -49,7 +49,6 @@ public class AccountRestAdapter {
             .then(Mono.fromCallable(() ->
                     ResponseEntity.status(201).body(
                             AccountOperationResponse.builder()
-                                    .status("status")
                                     .message("Cuenta guardada exitosamente")
                                     .build()
                     )
@@ -67,7 +66,6 @@ public class AccountRestAdapter {
             .then(Mono.fromCallable(() ->
                     ResponseEntity.status(201).body(
                             AccountOperationResponse.builder()
-                                    .status("status")
                                     .message("Cuenta actualizada exitosamente")
                                     .build()
                     )
@@ -83,7 +81,6 @@ public class AccountRestAdapter {
             .then(Mono.fromCallable(() ->
                     ResponseEntity.status(202).body(
                             AccountOperationResponse.builder()
-                                    .status("status")
                                     .message("Cuenta eliminada exitosamente")
                                     .build()
                     )

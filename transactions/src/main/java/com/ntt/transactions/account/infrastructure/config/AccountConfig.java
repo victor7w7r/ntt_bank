@@ -6,6 +6,7 @@ import com.ntt.transactions.account.infrastructure.in.messaging.AccountMessaging
 import com.ntt.transactions.account.infrastructure.in.messaging.mapper.AccountMessagingInputMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import tools.jackson.databind.ObjectMapper;
 
 @Configuration
 public class AccountConfig {
@@ -14,8 +15,10 @@ public class AccountConfig {
   public AccountMessagingInputAdapter accountMessagingInputAdapter(
       AccountSearchUseCase accountSearchUseCase,
       AccountDeleteUseCase accountDeleteUseCase,
-      AccountMessagingInputMapper accountMessagingInputMapper) {
+      AccountMessagingInputMapper accountMessagingInputMapper,
+      ObjectMapper objectMapper
+  ) {
     return new AccountMessagingInputAdapter(
-        accountDeleteUseCase, accountSearchUseCase, accountMessagingInputMapper);
+        accountDeleteUseCase, accountSearchUseCase, accountMessagingInputMapper, objectMapper);
   }
 }

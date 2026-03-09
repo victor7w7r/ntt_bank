@@ -5,7 +5,7 @@ info:
 
 http:
   method: POST
-  url: http://localhost:8081/api/v1/movements/478758
+  url: http://localhost:8081/api/v1/movements/496825
   headers:
     - name: Content-Type
       value: application/json
@@ -13,8 +13,9 @@ http:
     type: json
     data: |-
       {  
+        //478758
         "date": "2026-03-08",
-        "typeMovement": "Ahorro",
+        "typeMovement": "Retiro",
         "balance": "2000",
         "value": "-575.00"
       }
@@ -23,7 +24,7 @@ http:
       225487
       { 
         "date": "2026-03-08",
-        "typeMovement": "Corriente",
+        "typeMovement": "Deposito",
         "balance": "100",
         "value": "600"
       }
@@ -31,7 +32,7 @@ http:
       495878
       { 
         "date": "2026-03-08",
-        "typeMovement": "Ahorros",
+        "typeMovement": "Deposito",
         "balance": "0",
         "value": "150"
       }
@@ -39,7 +40,7 @@ http:
       496825
       { 
         "date": "2026-03-08",
-        "typeMovement": "Ahorros",
+        "typeMovement": "Retiro",
         "balance": "540",
         "value": "-540"
       }

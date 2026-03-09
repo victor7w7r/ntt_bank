@@ -15,7 +15,7 @@ public class PersonEntity {
   private Integer age;
 
   @Column("id_number")
-  private String idNumber;
+  private Long idNumber;
   private String address;
   private String phone;
 }

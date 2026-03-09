@@ -11,9 +11,6 @@ public interface AccountPersistenceMapper {
   AccountEntity toAccountEntity(Account account);
   Account toAccount(AccountEntity value);
 
-  @Mapping(target = "id", ignore = true)
-  @Mapping(target = "numAccount", ignore = true)
-  @Mapping(target = "customerRef", ignore = true)
   void update(Account source, @MappingTarget AccountEntity target);
 
   @Mapping(target = "numAccount", ignore = true)

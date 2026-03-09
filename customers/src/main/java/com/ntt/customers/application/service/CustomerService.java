@@ -35,23 +35,27 @@ public class CustomerService
   }
 
   @Override
-  public Mono<Long> sendCustomerRef(String idNumber) {
+  public Mono<Long> sendCustomerRef(Long idNumber) {
     return customerRepositortyPort
         .findByIdNumber(idNumber)
-        .map(Customer::getId)
-        .switchIfEmpty(Mono.error(new CustomerNotFoundException("ERROR: Cliente no encontrado")));
+        .map(Customer::getIdNumber)
+        .switchIfEmpty(Mono.defer(() -> {
+          log.warn("Al recibir el idNumber del customer, no se encontró: {}", idNumber);
+          return Mono.just(0L);
+        }));
   }
 
   @Override
   public Flux<StatusAccountReceive> requestStatusAccount(
-      LocalDate startDate, LocalDate endDate, String idNumber) {
+      LocalDate startDate, LocalDate endDate, Long idNumber
+  ) {
     return customerRepositortyPort
         .findByIdNumber(idNumber)
         .switchIfEmpty(Mono.error(new CustomerNotFoundException("ERROR: Cliente no encontrado")))
         .flatMapMany(
-            customerFound ->
-                customerStatusAccountPort.emitRequestStatusAccount(
-                    startDate, endDate, idNumber, customerFound));
+            cus ->
+                customerStatusAccountPort.requestStatusAccount(
+                    startDate, endDate, idNumber, cus));
   }
 
   @Override
@@ -76,7 +80,7 @@ public class CustomerService
   }
 
   @Override
-  public Mono<Void> delete(String idNumber) {
+  public Mono<Void> delete(Long idNumber) {
     return customerRepositortyPort
         .findByIdNumber(idNumber)
         .switchIfEmpty(Mono.error(new CustomerNotFoundException("ERROR: Cliente no encontrado")))

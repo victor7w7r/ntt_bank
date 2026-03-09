@@ -24,6 +24,13 @@ public class MovementRepositoryPersistenceAdapter implements MovementRepositoryP
             .map(movementPersistenceMapper::toMovement);
   }
 
+ @Override
+  public Flux<Movement> findByAccountMovement(Long accountMovement) {
+    return movementRepository
+            .findByAccountMovement(accountMovement)
+            .map(movementPersistenceMapper::toMovement);
+  }
+
   @Override
   public Mono<Movement> findByUuid(String uuid) {
     return movementRepository

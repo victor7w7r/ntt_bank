@@ -8,9 +8,9 @@ import reactor.core.publisher.Mono;
 
 public interface CustomerSearchUseCase {
   Flux<StatusAccountReceive> requestStatusAccount(
-      LocalDate startDate, LocalDate endDate, String idNumber);
+      LocalDate startDate, LocalDate endDate, Long idNumber);
 
-  Mono<Long> sendCustomerRef(String idNumber);
+  Mono<Long> sendCustomerRef(Long idNumber);
 
   Flux<Customer> findAll();
 }

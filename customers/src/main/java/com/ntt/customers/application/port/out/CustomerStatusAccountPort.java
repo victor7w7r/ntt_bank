@@ -9,6 +9,6 @@ import java.time.LocalDate;
 import java.util.List;
 
 public interface CustomerStatusAccountPort {
-  Flux<StatusAccountReceive> emitRequestStatusAccount(
-      LocalDate startDate, LocalDate endDate, String idNumber, Customer customer);
+  Flux<StatusAccountReceive> requestStatusAccount(
+      LocalDate startDate, LocalDate endDate, Long idNumber, Customer customer);
 }

@@ -10,8 +10,8 @@ import lombok.*;
 @AllArgsConstructor
 public class StatusAccountSendReq {
 
-  private LocalDate startDate;
-  private LocalDate endDate;
+  private String startDate;
+  private String endDate;
   private Long customerRef;
   private String customerName;
 }

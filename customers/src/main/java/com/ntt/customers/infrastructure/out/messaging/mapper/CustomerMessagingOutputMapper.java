@@ -7,5 +7,5 @@ import org.mapstruct.Mapper;
 @Mapper(componentModel = "spring")
 public interface CustomerMessagingOutputMapper {
   StatusAccountSendReq toStatusAccountSendReq(
-      LocalDate startDate, LocalDate endDate, Long customerRef, String customerName);
+      String startDate, String endDate, Long customerRef, String customerName);
 }

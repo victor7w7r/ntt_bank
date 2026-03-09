@@ -14,9 +14,9 @@ http:
     data: |-
       {  
         "date": "2026-03-08",
-        "uuid": "ssss-ssss",
-        "typeMovement": "Ahorro",
-        "balance": "2000",
+        "uuid": "55b1b426-d170-495e-8264-6bb2023be768",
+        "typeMovement": "Retiro",
+        "balance": "2002",
         "value": "-575.00"
       }
   auth: inherit

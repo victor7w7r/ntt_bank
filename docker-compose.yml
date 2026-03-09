@@ -59,7 +59,7 @@ services:
     build:
       context: ./customers
       dockerfile: Dockerfile
-    image: ntt/clients:latest
+    image: ntt/customers:latest
     container_name: ntt_bank_customers
     restart: unless-stopped
     ports:

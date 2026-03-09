@@ -43,13 +43,12 @@ public class MovementRestAdapter {
           @PathVariable Long numAccount
   ) {
     return Mono.just(request)
-            .doFirst(() -> log.info("Creating transaction {}", request.getUuid()))
+            .doFirst(() -> log.info("Creating movement with num account {}", numAccount))
             .map(movementRestMapper::toMovement)
             .flatMap((movement) -> movementCreateUseCase.save(movement, numAccount))
             .then(Mono.fromCallable(() ->
                     ResponseEntity.status(201).body(
                             MovementOperationResponse.builder()
-                                    .status("status")
                                     .message("Movimiento guardado exitosamente")
                                     .build()
                     )
@@ -67,7 +66,6 @@ public class MovementRestAdapter {
             .then(Mono.fromCallable(() ->
                     ResponseEntity.status(201).body(
                             MovementOperationResponse.builder()
-                                    .status("status")
                                     .message("Movimiento actualizado exitosamente")
                                     .build()
                     )
@@ -83,7 +81,6 @@ public class MovementRestAdapter {
             .then(Mono.fromCallable(() ->
                     ResponseEntity.status(202).body(
                             MovementOperationResponse.builder()
-                                    .status("status")
                                     .message("Movimiento eliminado exitosamente")
                                     .build()
                     )

@@ -7,5 +7,5 @@ import reactor.core.publisher.Mono;
 
 public interface CustomerRepository extends R2dbcRepository<CustomerEntity, Long> {
   @Query("SELECT * FROM customer WHERE id_number = :idNumber")
-  Mono<CustomerEntity> findByIdNumber(String idNumber);
+  Mono<CustomerEntity> findByIdNumber(Long idNumber);
 }

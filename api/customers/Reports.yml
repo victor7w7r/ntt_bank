@@ -5,7 +5,14 @@ info:
 
 http:
   method: GET
-  url: http://localhost:8080/api/v1/customers/reports
+  url: http://localhost:8080/api/v1/customers/reports/1725082786?startDate=2022-02-08&endDate=2022-02-10
+  params:
+    - name: startDate
+      value: 2022-02-08
+      type: query
+    - name: endDate
+      value: 2022-02-10
+      type: query
   auth: inherit
 
 runtime:

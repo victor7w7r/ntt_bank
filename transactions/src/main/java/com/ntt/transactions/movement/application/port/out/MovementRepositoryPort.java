@@ -6,12 +6,9 @@ import reactor.core.publisher.Mono;
 
 public interface MovementRepositoryPort {
   Flux<Movement> findAll();
-
+  Flux<Movement> findByAccountMovement(Long accountMovement);
   Mono<Movement> findByUuid(String uuid);
-
   Mono<Void> save(Movement movement);
-
   Mono<Void> update(Movement movement);
-
   Mono<Void> delete(String uuid);
 }

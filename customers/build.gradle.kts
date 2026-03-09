@@ -2,6 +2,7 @@ plugins {
     java
     id("org.springframework.boot") version "4.0.3"
     id("io.spring.dependency-management") version "1.1.7"
+    id("info.solidsoft.pitest") version "1.19.0-rc.3"
 }
 
 group = "com.ntt"
@@ -43,10 +44,12 @@ dependencies {
     runtimeOnly("org.postgresql:r2dbc-postgresql")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("io.karatelabs:karate-junit5:1.5.2")
     testImplementation("io.projectreactor:reactor-test")
     testImplementation("com.h2database:h2")
     testImplementation("org.springframework.cloud:spring-cloud-stream-test-binder")
-    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    testRuntimeOnly("org.junit.plrojectreactor:reactor-test")
+    testImplementation("com.h2dataatform:junit-platform-launcher")
 }
 
 dependencyManagement {
@@ -55,6 +58,13 @@ dependencyManagement {
     }
 }
 
+sourceSets {
+    getByName("test") {
+        resources.srcDir("src/test/java")
+    }
+}
+
 tasks.withType<Test> {
     useJUnitPlatform()
+    systemProperty("karate.options", System.getProperty("karate.options"))
 }

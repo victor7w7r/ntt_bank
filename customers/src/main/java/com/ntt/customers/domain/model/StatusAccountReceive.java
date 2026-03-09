@@ -14,8 +14,7 @@ public class StatusAccountReceive {
   private String customer;
   private Long numAccount;
   private String accountType;
-  private String transactionType;
-  private BigDecimal transaction;
-  private BigDecimal funds;
-  private BigDecimal availableFunds;
+  private String movementType;
+  private BigDecimal movement;
+  private BigDecimal balance;
 }

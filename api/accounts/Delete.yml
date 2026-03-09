@@ -5,7 +5,7 @@ info:
 
 http:
   method: DELETE
-  url: http://localhost:8081/api/v1/accounts/xxx
+  url: http://localhost:8081/api/v1/accounts/478758
   auth: inherit
 
 runtime:

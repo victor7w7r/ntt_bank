@@ -25,7 +25,7 @@ public class CustomerRequest {
   private Integer age;
 
   @NotBlank(message = "La identificación no puede estar vacía")
-  private String idNumber;
+  private Long idNumber;
 
   @NotBlank(message = "La dirección no puede estar vacía")
   private String address;

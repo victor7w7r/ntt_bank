@@ -25,7 +25,7 @@ public class CustomerRepositoryPersistenceAdapter implements CustomerRepositoryP
   }
 
   @Override
-  public Mono<Customer> findByIdNumber(String idNumber) {
+  public Mono<Customer> findByIdNumber(Long idNumber) {
     return customerRepository.findByIdNumber(idNumber).map(customerPersistenceMapper::toCustomer);
   }
 
@@ -52,7 +52,7 @@ public class CustomerRepositoryPersistenceAdapter implements CustomerRepositoryP
   }
 
   @Override
-  public Mono<Void> delete(String idNumber) {
+  public Mono<Void> delete(Long idNumber) {
     return customerRepository
         .findByIdNumber(idNumber)
         .switchIfEmpty(Mono.error(new CustomerNotFoundException("ERROR: Cliente no encontrado")))

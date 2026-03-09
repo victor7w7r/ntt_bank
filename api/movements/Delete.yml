@@ -5,7 +5,7 @@ info:
 
 http:
   method: DELETE
-  url: http://localhost:8081/api/v1/movements/UUID
+  url: http://localhost:8081/api/v1/movements/55b1b426-d170-495e-8264-6bb2023be768
   headers:
     - name: Content-Type
       value: application/json

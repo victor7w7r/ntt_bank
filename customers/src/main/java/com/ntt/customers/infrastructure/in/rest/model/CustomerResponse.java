@@ -12,7 +12,7 @@ public class CustomerResponse {
   private String name;
   private String gender;
   private Integer age;
-  private String idNumber;
+  private Long idNumber;
   private String address;
   private String phone;
   private String password;

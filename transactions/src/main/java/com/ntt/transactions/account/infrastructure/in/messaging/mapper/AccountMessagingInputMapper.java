@@ -6,6 +6,8 @@ import com.ntt.transactions.account.infrastructure.in.messaging.entity.StatusAcc
 import com.ntt.transactions.account.infrastructure.in.messaging.entity.StatusAccountSendReq;
 import org.mapstruct.Mapper;
 
+import java.util.List;
+
 @Mapper(componentModel = "spring")
 public interface AccountMessagingInputMapper {
   StatusAccountReceiveRes toStatusAccountReceiveRes(
@@ -15,4 +17,5 @@ public interface AccountMessagingInputMapper {
   StatusAccountSend toStatusAccountSend(
           StatusAccountSendReq statusAccountSendReq
   );
+
 }

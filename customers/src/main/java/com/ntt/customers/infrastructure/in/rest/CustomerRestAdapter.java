@@ -39,11 +39,11 @@ public class CustomerRestAdapter {
             .map(customerRestMapper::toCustomerResponse);
   }
 
-  @GetMapping("reports")
+  @GetMapping("reports/{idNumber}")
   public Flux<StatusAccountReceiveRes> getAccountStatus(
-          @RequestParam LocalDate startDate,
-          @RequestParam LocalDate endDate,
-          @RequestParam String idNumber
+      @PathVariable Long idNumber,
+      @RequestParam LocalDate startDate,
+      @RequestParam LocalDate endDate
   ) {
     return customerSearchUseCase
             .requestStatusAccount(startDate, endDate, idNumber)
@@ -86,7 +86,7 @@ public class CustomerRestAdapter {
   }
 
   @DeleteMapping("{idNumber}")
-  public Mono<ResponseEntity<?>> deleteCustomer(@PathVariable String idNumber) {
+  public Mono<ResponseEntity<?>> deleteCustomer(@PathVariable Long idNumber) {
     return customerDeleteUseCase.delete(idNumber)
             .doFirst(() -> log.info("Deleting customer {}", idNumber))
             .then(Mono.fromCallable(() ->
